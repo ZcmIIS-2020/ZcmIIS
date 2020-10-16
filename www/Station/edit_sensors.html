@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width,initial-scale=1.0" />
+
+	<script type="text/javascript" src="../js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../js/DBase.js"></script>
+
+	<style>
+		table.altrowstable {
+			font-family: verdana, arial, sans-serif;
+			font-size: 11px;
+			color: #333333;
+			border-width: 1px;
+			border-color: #a9c6c9;
+			border-collapse: collapse;
+		}
+
+		table.altrowstable th {
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #a9c6c9;
+		}
+
+		table.altrowstable td {
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #a9c6c9;
+		}
+
+		.oddrowcolor {
+			background-color: #d4e3e5;
+		}
+
+		.evenrowcolor {
+			background-color: #c3dde0;
+		}
+	</style>
+</head>
+
+<body>
+	<form id="formId">
+		<div style="position: absolute; top: 0px; height: 100%; width: 100%; background-color: #EEEEEE;" id="edit">
+			<table align="center" class="altrowstable"
+				style="margin-top: 30px; border-collapse:separate; border-spacing:0px 0px;">
+				<tr>
+					<td>传感器名称</td>
+					<td><input class="val" type="text" id="name" placeholder="请输入传感器名称"></td>
+				</tr>
+				<tr>
+					<td>传感器ip</td>
+					<td><input class="val" type="text" id="ip" placeholder="请输入传感器ip"></td>
+				</tr>
+
+				<td>传感器通道</td>
+				<td>
+					<select id="channel">
+						<option class="val" type="radio" id="channel1" value="1">通道1
+						<option class="val" type="radio" id="channel2" value="2">通道2
+						<option class="val" type="radio" id="channel3" value="3">通道3
+						<option class="val" type="radio" id="channel4" value="4">通道4
+						<option class="val" type="radio" id="channel5" value="5">通道5
+						<option class="val" type="radio" id="channel6" value="6">通道6
+						<option class="val" type="radio" id="channel7" value="7">通道7
+						<option class="val" type="radio" id="channel8" value="8">通道8
+						<option class="val" type="radio" id="channel9" value="9">通道9
+						<option class="val" type="radio" id="channel10" value="10">通道10
+						<option class="val" type="radio" id="channel11" value="11">通道11
+						<option class="val" type="radio" id="channel12" value="12">通道12
+						<option class="val" type="radio" id="channel13" value="13">通道13
+						<option class="val" type="radio" id="channel14" value="14">通道14
+						<option class="val" type="radio" id="channel15" value="15">通道15
+						<option class="val" type="radio" id="channel16" value="16">通道16
+					</select>
+				</td>
+				</tr>
+				<tr>
+					<td>传感器编号</td>
+					<td><input class="val" type="text" id="number" placeholder="请输入传感器编号"></td>
+				</tr>
+				<tr>
+				<tr>
+					<td>传感器类型</td>
+					<td>
+						<select id="type">
+							<option class="val" id="accelerate" value="accelerate">加速度传感器</option>
+							<option class="val" id="temperature" value="temperature">温度传感器</option>
+							<option class="val" id="humidity" value="humidity">湿度传感器</option>
+							<option class="val" id="angle" value="angle">倾角传感器</option>
+							<option class="val" id="distance" value="distance">距离传感器</option>
+							<option class="val" id="wind" value="wind">风速传感器</option>
+							<option class="val" id="rebar" value="rebar">钢筋计</option>
+							<option class="val" id="change" value="change">应变计</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>传感器最高阈值</td>
+					<td><input class="val" type="text" id="high_alert" placeholder="最高阈值"></td>
+				</tr>
+				<tr>
+					<td>传感器最低阈值</td>
+					<td><input class="val" type="text" id="low_alert" placeholder="最低阈值"></td>
+				</tr>
+
+				<tr>
+					<td>传感器参数转换</td>
+					<td>
+						<input class="val" type="text " id="check_parameter" placeholder="参数转换">
+					</td>
+				</tr>
+				<tr>
+					<td>补偿传感器名称</td>
+					<td>
+						<input class="val" type="text" id="replace_sensor_id" placeholder="请输入补偿传感器名称" />
+					</td>
+				</tr>
+
+			</table>
+		</div>
+	</form>
+</body>
+
+</html>
