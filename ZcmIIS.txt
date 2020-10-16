@@ -1,0 +1,5 @@
+{
+"WebServer":"{\"IP\":\"192.168.8.36\",\"Port\":\"80\"}",
+"WorkerProcess":"4",
+"PoolThreads":"25"
+}

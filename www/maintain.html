@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="LayUI/css/layui.css" media="all">
+  <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="js/DBase.js"></script>
+  <script src="LayUI/layui.js"></script>
+
+  <style>
+    body {
+      margin: 10px;
+    }
+
+    .demo-carousel {
+      height: 200px;
+      line-height: 200px;
+      text-align: center;
+    }
+
+    #percent {
+      position: absolute;
+      width: 200px;
+      height: 20px;
+      color: red;
+      text-align: center;
+      border: 1p;
+    }
+
+    .ant-btn {
+      line-height: 1.499;
+      position: relative;
+      display: inline-block;
+      font-weight: 400;
+      white-space: nowrap;
+      text-align: center;
+      background-image: none;
+      border: 1px solid transparent;
+      -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+      cursor: pointer;
+      -webkit-transition: all .3s cubic-bezier(.645, .045, .355, 1);
+      transition: all .3s cubic-bezier(.645, .045, .355, 1);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      height: 32px;
+      padding: 0 15px;
+      font-size: 14px;
+      border-radius: 4px;
+      color: rgba(0, 0, 0, 0.65);
+      background-color: #fff;
+      border-color: #d9d9d9;
+      left: 10px;
+      top: 5px
+    }
+
+    .ant-btn-primary {
+      color: #fff;
+      background-color: #1890ff;
+      border-color: #1890ff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+      -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+    }
+
+    .ant-btn-red {
+      color: #fff;
+      background-color: #FF5A44;
+      border-color: #FF5A44;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+      -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+    }
+  </style>
+</head>
+
+<body>
+  <table class="layui-hide" id="demo" lay-filter="test"></table>
+
+  <script type="text/html" id="toolbar">
+      <button class="layui-btn layui-btn-sm" lay-event="edit1">编辑数据接收的ip和端口</button>
+  </script>
+
+  <script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+    <button id="edit_sensor" class="layui-btn layui-btn-sm" lay-event="edit">编辑</button>
+  </div>
+</script>
+
+  <script>
+
+    $("#delete_ws").click(function () {
+      layui.use('layer', function () {
+        var layer = layui.layer;
+        layer.open({
+          title: "编辑接收数据的ip和端口",
+          type: 2,
+          closeBtn: 1,
+          area: ["500px", "350px"],
+          shade: 0.2,
+          resize: false,
+          offset: 'auto',
+          id: 'LAY_2', //设定一个id，防止重复弹出
+          content: ['Station/delete_ws.html', 'no'],
+          yes: function (index, layero) {
+            let loading = layer.load(1);
+            body = layui.layer.getChildFrame('body', index);
+
+            layer.close(loading);
+            layer.close(index);
+
+          },
+          btn2: function (index, layero) {
+            layer.close(index);
+          },
+          cancel: function (index, layero) {
+            layer.close(index)
+            return false;
+          },
+          end: function () {
+            // location.reload();
+          }
+        });
+      });
+    });
+
+    let TableCols = ["name", "ip", "channel", "number", "type", "high_alert", "low_alert", "check_parameter", "replace_sensor_id", "x", "y", "monitor_name"];
+    let URL = "/ZcmDB|sensor_info|select * from sensors;|";
+    let Data = window.selectDB(URL, TableCols);
+
+    console.log(Data)
+
+    layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload',
+      'element', 'slider'], function () {
+        var laydate = layui.laydate //日期
+          , laypage = layui.laypage //分页
+          , layer = layui.layer //弹层
+          , table = layui.table //表格
+          , carousel = layui.carousel //轮播
+          , upload = layui.upload //上传
+          , element = layui.element //元素操作
+          , slider = layui.slider //滑块
+
+        let selectID;
+
+        table.render({
+          elem: '#demo'
+          , data: Data
+          , height: 500
+          , title: '用户表'
+          , page: true //开启分页
+          , toolbar: '#toolbar' //开启工具栏
+          , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+            title: '提示'
+            , layEvent: 'LAYTABLE_TIPS'
+            , icon: 'layui-icon-tips'
+          }]
+          , layEvent: 'LAYTABLE_TIPS'
+          , cols: [[ //表头
+            { field: 'name', title: '传感器名称', minWidth: 130 }
+            , { field: 'ip', title: '传感器ip', minWidth: 150 }
+            , { field: 'channel', title: '传感器通道', minWidth: 120 }
+            , { field: 'number', title: '传感器编号', minWidth: 120 }
+            , { field: 'type', title: '传感器类型', minWidth: 100 }
+            , { field: 'high_alert', title: '最高阈值', minWidth: 100 }
+            , { field: 'low_alert', title: '最低阈值', minWidth: 100 }
+            , { field: 'check_parameter', title: '传感器参数转换', minWidth: 130 }
+            , { field: 'replace_sensor_id', title: '补偿传感器名称', minWidth: 130 }
+            , { fixed: 'right', width: 178, align: 'center', toolbar: '#toolbarDemo' }
+          ]]
+        });
+
+        // 监听工具条 
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+          var data = obj.data; //获得当前行数据
+          console.log(data);
+          var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+          if (layEvent === 'edit') { //编辑
+            layer.open({
+              title: "编辑传感器",
+              type: 2,
+              closeBtn: 1,
+              area: ['500px', '500px'], //['500px', '350px']
+              shade: 0.2,
+              shadeClose: true,
+              resize: false,
+              btn: ['确定', '取消'],
+              scrollbar: false,
+              scrolling: 'no',
+              // id: 'LAY_3', //设定一个id，防止重复弹出
+              btn: ['确定', '取消'],
+              content: ['Station/edit_sensors.html', 'no'],
+              success: function (layero, index) {
+                let body = layer.getChildFrame('body', index);
+                body.find("#name").val(data["name"]);
+                body.find("#ip").val(data["ip"]);
+                body.find("#channel").val(data["channel"]);
+                body.find("#number").val(data["number"]);
+                body.find("#type").val(data["type"]);
+                body.find("#high_alert").val(data["high_alert"]);
+                body.find("#low_alert").val(data["low_alert"]);
+                body.find("#check_parameter").val(data["check_parameter"]);
+                body.find("#replace_sensor_id").val(data["replace_sensor_id"]);
+              },
+              yes: function (index, layero) {
+                let loading = layer.load(1);
+                body = layui.layer.getChildFrame('body', index);
+                let name = body.find("#name").val().trim();
+                console.log(name)
+                let ip = body.find("#ip").val().trim();
+                console.log(ip)
+                let channel = body.find("#channel").val().trim();
+                console.log(channel)
+                let number = body.find("#number").val().trim();
+                console.log(number)
+                let type = body.find("#type").val().trim();
+                console.log(type)
+                let high_alert = body.find("#high_alert").val().trim();
+                let low_alert = body.find("#low_alert").val().trim();
+                let check_parameter = body.find("#check_parameter").val().trim();
+                let replace_sensor_id = body.find("#replace_sensor_id").val().trim();
+                layer.close(loading);
+                layer.close(index);
+
+                let url1 = '/ZcmDB|sensor_info|update sensors set name = "' + name + '", ip = "' + ip + '", channel = "' + channel + '", number = "' + number + '", high_alert = "' + high_alert + '", low_alert = "' + low_alert + '", check_parameter = "' + check_parameter + '", replace_sensor_id = "' + replace_sensor_id + '" where name = "' + name + '";|';
+                window.updateDB(url1);
+              },
+              btn2: function (index, layero) {
+                layer.close(index);
+              },
+              cancel: function (index, layero) {
+                // if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+                layer.close(index)
+                // }
+                // return false; 
+              },
+              end: function () {
+                location.reload();
+              }
+            });
+          }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+          var checkStatus = table.checkStatus(obj.config.id);
+          switch (obj.event) {
+            case 'edit1':
+              // $("#delete_ws").click(function () {
+              layui.use('layer', function () {
+                var layer = layui.layer;
+                layer.open({
+                  title: "编辑接收数据的ip和端口",
+                  type: 2,
+                  closeBtn: 1,
+                  area: ["500px", "350px"],
+                  shade: 0.2,
+                  resize: false,
+                  offset: 'auto',
+                  id: 'LAY_2', //设定一个id，防止重复弹出
+                  content: ['Station/delete_ws.html', 'no'],
+                  yes: function (index, layero) {
+                    let loading = layer.load(1);
+                    body = layui.layer.getChildFrame('body', index);
+
+                    layer.close(loading);
+                    layer.close(index);
+
+                  },
+                  btn2: function (index, layero) {
+                    layer.close(index);
+                  },
+                  cancel: function (index, layero) {
+                    layer.close(index)
+                    return false;
+                  },
+                  end: function () {
+                    // location.reload();
+                  }
+                });
+              });
+              // });
+              break;
+            // case 'getCheckLength':
+            //   var data = checkStatus.data;
+            //   layer.msg('选中了：' + data.length + ' 个');
+            //   break;
+            // case 'isAll':
+            //   layer.msg(checkStatus.isAll ? '全选' : '未全选');
+            //   break;
+
+            // //自定义头工具栏右侧图标 - 提示
+            // case 'LAYTABLE_TIPS':
+            //   layer.alert('这是工具栏右侧自定义的一个图标按钮');
+            //   break;
+          };
+        });
+      });
+  </script>
+</body>
+
+</html>
