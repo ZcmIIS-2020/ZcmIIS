@@ -72,8 +72,8 @@
 			winWidth = document.documentElement.clientWidth;
 		}
 		//结果输出至两个文本框
-		console.log("windowWidth:"+winWidth / 32);
-		console.log("windowHeight:"+winHeight / 32);
+		//console.log("windowWidth:"+winWidth / 32);
+		//console.log("windowHeight:"+winHeight / 32);
 
 		var iw = document.getElementById("sectionImg").style.width
 		var ih = document.getElementById("sectionImg").style.height
@@ -81,16 +81,16 @@
 		var iw = iw.substring(0,iw.length-2);
 		var ih = ih.substring(0,ih.length-2);
 
-		console.log("iw:"+iw);
-		console.log("ih:"+ih);
+		//console.log("iw:"+iw);
+		//console.log("ih:"+ih);
 		//更改div显示的位置
 		document.getElementById("sectionImg").style.left = (winWidth - iw) / 2 + "px";
 		document.getElementById("sectionImg").style.top = (winHeight - iw) / 2  + 230 + "px";
 
 		var l = document.getElementById("sectionImg").style.left
 		var h = document.getElementById("sectionImg").style.top
-		console.log("l:"+ l);
-		console.log("h:"+ h);
+		//console.log("l:"+ l);
+		//console.log("h:"+ h);
 	}
 	findDimensions();                  //调用函数，获取数值
 	window.onresize=findDimensions;
@@ -108,7 +108,7 @@
 
 	$("#sectionImg").click(function (e) {
 		if (divClassName != "rect") {
-			console.log(22222)
+			//console.log(22222)
 			//取消上次延时未执行的方法
 			clearTimeout(clickTimeId);
 			e = e || event;
@@ -119,7 +119,7 @@
 				var e = eve || window.event;
 
 				if (e.keyCode == 65) {
-					console.log("按下了a键")   //按键盘A，控制台输出按下了a键
+					//console.log("按下了a键")   //按键盘A，控制台输出按下了a键
 					clickTimeId = setTimeout(function () {
 				//此处为单击事件要执行的代码
 				layui.use('layer', function () {
@@ -141,15 +141,15 @@
 							let loading = layer.load(1);
 							body = layui.layer.getChildFrame('body', index);
 							let sid = body.find("#name").val().trim();
-							console.log(sid)
+							//console.log(sid)
 							let sip = body.find("#ip").val().trim();
-							console.log(sip)
+							//console.log(sip)
 							let tnum = body.find("#channel").val().trim();
-							console.log(tnum)
+							//console.log(tnum)
 							let snum = body.find("#number").val().trim();
-							console.log(snum)
+							//console.log(snum)
 							let stype = body.find("#type").val().trim();
-							console.log(stype)
+							//console.log(stype)
 							let halert = body.find("#high_alert").val().trim();
 							let lalert = body.find("#low_alert").val().trim();
 							let parameter = body.find("#check_parameter").val().trim();
@@ -166,7 +166,7 @@
 							//	+ tnum + "','" + snum + "','" + stype + "' ,'" + x + "','" + y + "');|";
 
 							window.insertDB(URL);
-							console.log(URL)
+							//console.log(URL)
 
 						},
 						btn2: function (index, layero) {
@@ -184,16 +184,16 @@
 					});
 				});
 
-				console.log("鼠标单击");
+				//console.log("鼠标单击");
 
 			}, 250);
 				}
 
-				console.log(e.keyCode)   // 按那个键就输出哪个键对应的万国码值
+				//console.log(e.keyCode)   // 按那个键就输出哪个键对应的万国码值
 
-				console.log(e.ctrlKey)
-				console.log(e.shiftKey)
-				console.log(e.altKey)
+				//console.log(e.ctrlKey)
+				//console.log(e.shiftKey)
+				//console.log(e.altKey)
 				//ctrl shift alt 都比较特殊，可以用于组合
 			}
 			
@@ -204,7 +204,7 @@
 	var thisURL = document.URL;
 	var getval = thisURL.split('?')[1];
 	var monitor_name = getval.split("=")[1];
-	console.log("monitor_name:" + monitor_name)
+	//console.log("monitor_name:" + monitor_name)
 
 	var canvas = document.getElementById("canvas");
 	var context = canvas.getContext("2d");
@@ -240,10 +240,10 @@
 
 
 						if (data_dic[trans_tnum][trans_snum-1] < low_alert) {
-							console.log("111111111111111111111111");
+							//console.log("111111111111111111111111");
 							document.getElementById("dataStatus").innerHTML = "<p style='color:#00ff00; font-size:20px;';>传感器状态：正常</p>"
 							document.getElementById(trans_id).innerHTML = "<img class='img' src='fig/" + trans_type + ".png' draggable='false'/>";
-						} else if (data_dic[trans_tnum][trans_snum-1] > low_alert) {						console.log("2222222222222222222222");
+						} else if (data_dic[trans_tnum][trans_snum-1] > low_alert) {						//console.log("2222222222222222222222");
 							document.getElementById("dataStatus").innerHTML = "<p style='color:#ffa500; font-size:20px;';>传感器状态：预警</p>"
 							document.getElementById(trans_id).innerHTML = "<img class='img' src='fig/" + trans_type + "Yujing.png' draggable='false'/>";
 						} else if (data_dic[trans_tnum][trans_snum-1] > high_alert) {
@@ -267,7 +267,7 @@
 							sensor_ip.push(Data[i]["ip"]);
 					}
 			}
-			console.log(sensorData);
+			//console.log(sensorData);
 			for (var i = 0; i < sensorData.length; i++) {
 						var x = sensorData[i]["x"];
 						var y = sensorData[i]["y"];
@@ -295,7 +295,7 @@
 				oDiv.high_alert =Number (sensorData[i]['high_alert']);
 				oDiv.type = sensorData[i]['type'];
 				document.getElementById("sectionImg").appendChild(oDiv);
-				console.log("ip:" + oDiv.transmit_ip);
+				//console.log("ip:" + oDiv.transmit_ip);
 				var sensorType = sensorData[i]["type"];
 				switch (sensorType) {
 
@@ -358,8 +358,8 @@
 			startY = e.clientY - one.offsetTop;
 			ofX = one.offsetLeft;
 			ofY = one.offsetTop
-			console.log(startX, startY);
-			console.log(one.offsetLeft, one.offsetTop);
+			//console.log(startX, startY);
+			//console.log(one.offsetLeft, one.offsetTop);
 
 
 		}
@@ -371,7 +371,7 @@
 				var e = e || window.event;
 				one.style.left = e.clientX - startX + "px";
 				one.style.top = e.clientY - startY + "px";
-				// console.log(one.style.left, one.style.top);
+				// //console.log(one.style.left, one.style.top);
 			}
 		}
 
@@ -384,21 +384,21 @@
 
 			endX = evt.clientX - startX;
 			endY = evt.clientY - startY;
-			console.log(endX, endY);
+			//console.log(endX, endY);
 			document.onmousemove = null;
 			document.onmouseup = null;
 
 
 			var d = Math.sqrt((endX - ofX) * (endX - ofX) + (endY - ofY) * (endY - ofY));
 			if (d === 0 || d < 7) {
-				console.log("执行了点击事件")
+				//console.log("执行了点击事件")
 				if (divClassName == "rect") {
 					clearTimeout(clickTimeId);
 					document.onkeydown = function (eve) {
 						var e = eve || window.event;
 
 						if (e.keyCode == 32) {
-							console.log("按下了空格键")   //按键盘A，控制台输出按下了a键
+							//console.log("按下了空格键")   //按键盘A，控制台输出按下了a键
 							clickTimeId = setTimeout(function () {
 								layui.use('layer', function () {
 									var layer = layui.layer;
@@ -419,15 +419,15 @@
 											let loading = layer.load(1);
 											body = layui.layer.getChildFrame('body', index);
 											let name = body.find("#name").val().trim();
-											console.log(name)
+											//console.log(name)
 											let ip = body.find("#ip").val().trim();
-											console.log(ip)
+											//console.log(ip)
 											let channel = body.find("#channel").val().trim();
-											console.log(channel)
+											//console.log(channel)
 											let number = body.find("#number").val().trim();
-											console.log(number)
+											//console.log(number)
 											let type = body.find("#type").val().trim();
-											console.log(type)
+											//console.log(type)
 											let high_alert = body.find("#high_alert").val().trim();
 											let low_alert = body.find("#low_alert").val().trim();
 											let check_parameter = body.find("#check_parameter").val().trim();
@@ -454,19 +454,19 @@
 							}, 250);
 						}
 
-						console.log(e.keyCode)   // 按那个键就输出哪个键对应的万国码值
+						//console.log(e.keyCode)   // 按那个键就输出哪个键对应的万国码值
 
-						console.log(e.ctrlKey)
-						console.log(e.shiftKey)
-						console.log(e.altKey)
+						//console.log(e.ctrlKey)
+						//console.log(e.shiftKey)
+						//console.log(e.altKey)
 						//ctrl shift alt 都比较特殊，可以用于组合
 					}
-					console.log(111111);
+					//console.log(111111);
 
 
 				}
 			} else {
-				console.log("执行了拖拽事件")
+				//console.log("执行了拖拽事件")
 				let url1 = '/ZcmDB|sensor_info|update sensors set x = "' + endX + '", y = "' + endY + '" where name = "' + selectID + '";|';
 				window.updateDB(url1);
 			}
@@ -503,14 +503,14 @@
 	let wsURL_data = "/ZcmDB|wsurl|select * from websocket;|";
 	let ws_data = window.selectDB(wsURL_data, wsCols);
 	let wsDataLengh = ws_data.length;
-	console.log(ws_data);
+	//console.log(ws_data);
 
 	let ws_ip = ws_data[wsDataLengh-1]['ip']
 	let ws_port = ws_data[wsDataLengh-1]['port']
 
 	// var wsUrl = "ws://10.141.31.237:10000";
 	var wsUrl = "ws://" + ws_ip + ":" + ws_port;
-	console.log(wsUrl)
+	//console.log(wsUrl)
 	testWebSocket();
 
 	function testWebSocket() {
@@ -636,10 +636,10 @@
 		});
 		
 
-		console.log(transmit_ip);
-		console.log(transmit_Tnum);
-		console.log(transmit_Snum);
-		console.log(transmit_name);
+		//console.log(transmit_ip);
+		//console.log(transmit_Tnum);
+		//console.log(transmit_Snum);
+		//console.log(transmit_name);
 		
 		$("#label").html("传感器名称：" + transmit_name + " <br/> 数据ip：" + transmit_ip + " <br/> 数据通道：" + transmit_Tnum +  " <br/> 数据编号：" + transmit_Snum + "<br/> 传感器数值：")
 		setInterval(function () {
@@ -661,7 +661,7 @@
 
 	function mouseOut() {
 		divClassName = "img";
-		console.log(divClassName);
+		//console.log(divClassName);
 
 		$("#"+selectID+"").css({
 			"backgroundColor": "transparent"

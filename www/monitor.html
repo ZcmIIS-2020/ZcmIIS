@@ -144,8 +144,8 @@
                 winWidth = document.documentElement.clientWidth;
             }
             //结果输出至两个文本框
-            console.log("windowWidth:" + winWidth / 32);
-            console.log("windowHeight:" + winHeight / 32);
+            //console.log("windowWidth:" + winWidth / 32);
+            //console.log("windowHeight:" + winHeight / 32);
 
             var iw = document.getElementById("sectionImg").style.width
             var ih = document.getElementById("sectionImg").style.height
@@ -153,16 +153,16 @@
             var iw = iw.substring(0, iw.length - 2);
             var ih = ih.substring(0, ih.length - 2);
 
-            console.log("iw:" + iw);
-            console.log("ih:" + ih);
+            //console.log("iw:" + iw);
+            //console.log("ih:" + ih);
             //更改div显示的位置
             document.getElementById("sectionImg").style.left = (winWidth - iw) / 2 + "px";
             document.getElementById("sectionImg").style.top = (winHeight - iw) / 2 + 230 + "px";
 
             var l = document.getElementById("sectionImg").style.left
             var h = document.getElementById("sectionImg").style.top
-            console.log("l:" + l);
-            console.log("h:" + h);
+                //console.log("l:" + l);
+                //console.log("h:" + h);
         }
         findDimensions(); //调用函数，获取数值
         window.onresize = findDimensions;
@@ -184,7 +184,7 @@
             let URL = "/ZcmDB|monitor_site|select * from sites;|";
 
             let Data = window.selectDB(URL, TableCols);
-            console.log(Data);
+            //console.log(Data);
 
             for (var i = 0; i < Data.length; i++) {
                 var x = Data[i]["x"];
@@ -220,7 +220,7 @@
         //键盘控制模型位置 1:49   2:50    delete:46
         function onKeyDown(event) {
             if (event.keyCode == 46) {
-                console.log(123);
+                //console.log(123);
                 var odiv = document.getElementById("" + selectID + "");
                 var position_x = odiv.getBoundingClientRect().left;
 
@@ -249,9 +249,10 @@
             var yPos = (evt.pageY || evt.clientY || evt.offsetY || evt.y) - 50;
             monitor_name = this.id;
             selectID = this.id;
+
             eng_name = this.eng_name;
 
-            console.log(monitor_name);
+            //console.log(monitor_name);
 
             $("#" + selectID + "").css({
                 "backgroundColor": "#0044ff"
