@@ -20,6 +20,9 @@
     <meta charset="utf-8" />
     <title>实时监测</title>
     <link rel="stylesheet" href="../LayUI/css/layui.css" media="all">
+    <link rel="stylesheet" href="../desktop/desktop.css">
+
+    <script type="text/javascript" src="../js/sensors.js"></script>
     <script type="text/javascript" src="../js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="../js/DBase.js"></script>
     <!-- <script type="text/javascript" src="../js/tools.js" ></script> -->
@@ -113,106 +116,34 @@
         window.onload = function() {
             // document.addEventListener('click', onDocumentClick);
             document.addEventListener('dblclick', onDocumenDblClick);
+            document.oncontextmenu = function(ev) {
+                //先检查有没有菜单，若有，消失
+                if ($('.menu')) {
+                    $('.menu').css({
+                        display: 'none'
+                    })
+                }
+                //判断当前鼠标右键点击的dom是否为传感器
+                if (ev.target.className.includes('sensorImg')) {
+                    sensorMenu(document, ev);
+                } else {
+                    documentMenu(document, ev);
+                }
+            };
+
+            //点击左键时，菜单消失
+            document.onclick = function() {
+                if ($('.menu')) {
+                    $('.menu').css({
+                        display: 'none'
+                    })
+                }
+            }
         }
 
         var clickTimeId;
         let dataDic = {};
         let sensor_ip = [];
-
-        $("#sectionImg").click(function(e) {
-            if (divClassName != "rect") {
-                //console.log(22222)
-                //取消上次延时未执行的方法
-                clearTimeout(clickTimeId);
-                e = e || event;
-                var x = e.offsetX;
-                var y = e.offsetY;
-                //执行延时
-                document.onkeydown = function(eve) {
-                    var e = eve || window.event;
-
-                    if (e.keyCode == 65) {
-                        //console.log("按下了a键")   //按键盘A，控制台输出按下了a键
-                        clickTimeId = setTimeout(function() {
-                            //此处为单击事件要执行的代码
-
-                            layui.use('layer', function() {
-                                var layer = layui.layer;
-                                layer.open({
-                                    title: "添加传感器",
-                                    type: 2,
-                                    closeBtn: 1,
-                                    area: ['500px', '450px'], //['500px', '350px']
-                                    shade: 0.2,
-                                    shadeClose: true,
-                                    resize: false,
-                                    btn: ['确定', '取消'],
-                                    scrollbar: false,
-                                    scrolling: 'no',
-                                    id: 'LAY_layuipro', //设定一个id，防止重复弹出
-                                    content: ['./edit_sensor.html', 'no'],
-                                    yes: function(index, layero) {
-                                        let loading = layer.load(1);
-                                        body = layui.layer.getChildFrame('body', index);
-                                        let sid = body.find("#name").val().trim();
-                                        //console.log(sid)
-                                        let sip = body.find("#ip").val().trim();
-                                        //console.log(sip)
-                                        let tnum = body.find("#channel").val().trim();
-                                        //console.log(tnum)
-                                        let snum = body.find("#number").val().trim();
-                                        //console.log(snum)
-                                        let stype = body.find("#type").val().trim();
-                                        //console.log(stype)
-                                        let halert = body.find("#high_alert").val().trim();
-                                        let lalert = body.find("#low_alert").val().trim();
-                                        let parameter = body.find("#check_parameter").val().trim();
-                                        let supplySensorName = body.find("#replace_sensor_id").val().trim();
-                                        let monitorName = monitor_name;
-                                        layer.close(loading);
-                                        layer.close(index);
-
-                                        //将传感器配置写进数据库
-                                        var URL = "/ZcmDB|sensor_info|insert into sensors values('" + sid + "','" + sip + "','" +
-                                            tnum + "','" + snum + "','" + stype + "','" + halert + "','" + lalert + "','" +
-                                            parameter + "','" + supplySensorName + "','" + x + "','" + y + "', '" + monitorName + "');|";
-                                        //var URL = "/ZcmDB|sensor_info|insert into sensors values('" + sid + "','" + sip + "','"
-                                        //	+ tnum + "','" + snum + "','" + stype + "' ,'" + x + "','" + y + "');|";
-
-                                        window.insertDB(URL);
-                                        //console.log(URL)
-
-                                    },
-                                    btn2: function(index, layero) {
-                                        layer.close(index);
-                                    },
-                                    cancel: function(index, layero) {
-                                        // if (confirm('确定要关闭么')) { //只有当点击confirm框的确定时，该层才会关闭
-                                        layer.close(index)
-                                            // }
-                                        return false;
-                                    },
-                                    end: function() {
-                                        location.reload();
-                                    }
-                                });
-                            });
-
-                            //console.log("鼠标单击");
-
-                        }, 250);
-                    }
-
-                    //console.log(e.keyCode)   // 按那个键就输出哪个键对应的万国码值
-
-                    //console.log(e.ctrlKey)
-                    //console.log(e.shiftKey)
-                    //console.log(e.altKey)
-                    //ctrl shift alt 都比较特殊，可以用于组合
-                }
-
-            }
-        });
 
 
         var thisURL = document.URL;
@@ -316,19 +247,19 @@
                 switch (sensorType) {
 
                     case "humidity":
-                        oDiv.innerHTML = "<img class='img' src='fig/humidity.png' draggable='false'/>";
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/humidity.png' draggable='false'/>";
                         break;
                     case "wind":
-                        oDiv.innerHTML = "<img class='img' src='fig/wind.png' draggable='false'/>";
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/wind.png' draggable='false'/>";
                         break;
                     case "rebar":
-                        oDiv.innerHTML = "<img class='img' src='fig/rebar.png' draggable='false'/>";
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/rebar.png' draggable='false'/>";
                         break;
                     case "change":
-                        oDiv.innerHTML = "<img class='img' src='fig/change.png' draggable='false'/>";
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/change.png' draggable='false'/>";
                         break;
                     case "temperature":
-                        oDiv.innerHTML = "<img class='img' src='fig/temperature.png' draggable='false'/>";
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/temperature.png' draggable='false'/>";
                         break;
                 }
             }
@@ -340,21 +271,6 @@
         }
 
         init();
-
-        //键盘控制模型位置 1:49   2:50    delete:46
-        function onKeyDown(event) {
-            if (event.keyCode == 46) {
-                var odiv = document.getElementById("" + selectID + "");
-                var position_x = odiv.getBoundingClientRect().left;
-
-                let URL = "/ZcmDB|sensor_info|delete from sensors where name = '" + selectID + "';|";
-                window.deleteDB(URL);
-
-                $("#" + selectID + "").remove();
-            }
-        }
-        document.addEventListener("keydown", onKeyDown);
-
 
 
         var startX
@@ -408,89 +324,8 @@
             document.onmousemove = null;
             document.onmouseup = null;
 
-
-            var d = Math.sqrt((endX - ofX) * (endX - ofX) + (endY - ofY) * (endY - ofY));
-            if (d === 0 || d < 7) {
-                //console.log("执行了点击事件")
-                if (divClassName == "rect") {
-                    clearTimeout(clickTimeId);
-                    document.onkeydown = function(eve) {
-                            var e = eve || window.event;
-
-                            if (e.keyCode == 32) {
-                                //console.log("按下了空格键")   //按键盘A，控制台输出按下了a键
-                                clickTimeId = setTimeout(function() {
-                                    layui.use('layer', function() {
-                                        var layer = layui.layer;
-                                        layer.open({
-                                            title: "编辑传感器",
-                                            type: 2,
-                                            closeBtn: 1,
-                                            area: ['500px', '450px'], //['500px', '350px']
-                                            shade: 0.2,
-                                            shadeClose: true,
-                                            resize: false,
-                                            btn: ['确定', '取消'],
-                                            scrollbar: false,
-                                            scrolling: 'no',
-                                            id: 'LAY_1', //设定一个id，防止重复弹出
-                                            content: ['edit_sensor.html?selectID=' + selectID, 'no'],
-                                            yes: function(index, layero) {
-                                                let loading = layer.load(1);
-                                                body = layui.layer.getChildFrame('body', index);
-                                                let name = body.find("#name").val().trim();
-                                                //console.log(name)
-                                                let ip = body.find("#ip").val().trim();
-                                                //console.log(ip)
-                                                let channel = body.find("#channel").val().trim();
-                                                //console.log(channel)
-                                                let number = body.find("#number").val().trim();
-                                                //console.log(number)
-                                                let type = body.find("#type").val().trim();
-                                                //console.log(type)
-                                                let high_alert = body.find("#high_alert").val().trim();
-                                                let low_alert = body.find("#low_alert").val().trim();
-                                                let check_parameter = body.find("#check_parameter").val().trim();
-                                                let replace_sensor_id = body.find("#replace_sensor_id").val().trim();
-                                                layer.close(loading);
-                                                layer.close(index);
-
-                                                let url1 = '/ZcmDB|sensor_info|update sensors set name = "' + name + '", ip = "' + ip + '", channel = "' + channel + '", number = "' + number + '", high_alert = "' + high_alert + '", low_alert = "' + low_alert + '", check_parameter = "' + check_parameter + '", replace_sensor_id = "' + replace_sensor_id + '" where name = "' + name + '";|';
-                                                window.updateDB(url1);
-
-                                            },
-                                            btn2: function(index, layero) {
-                                                layer.close(index);
-                                            },
-                                            cancel: function(index, layero) {
-                                                layer.close(index)
-                                                return false;
-                                            },
-                                            end: function() {
-                                                location.reload();
-                                            }
-                                        });
-                                    });
-                                }, 250);
-                            }
-
-                            //console.log(e.keyCode)   // 按那个键就输出哪个键对应的万国码值
-
-                            //console.log(e.ctrlKey)
-                            //console.log(e.shiftKey)
-                            //console.log(e.altKey)
-                            //ctrl shift alt 都比较特殊，可以用于组合
-                        }
-                        //console.log(111111);
-
-
-                }
-            } else {
-                //console.log("执行了拖拽事件")
-                let url1 = '/ZcmDB|sensor_info|update sensors set x = "' + endX + '", y = "' + endY + '" where name = "' + selectID + '";|';
-                window.updateDB(url1);
-            }
-
+            let url1 = '/ZcmDB|sensor_info|update sensors set x = "' + endX + '", y = "' + endY + '" where name = "' + selectID + '";|';
+            window.updateDB(url1);
         }
 
 
@@ -634,7 +469,18 @@
             $("#label").empty();
             evt = evt || window.event;
             var xPos = evt.pageX || evt.clientX || evt.offsetX || evt.x;
-            var yPos = (evt.pageY || evt.clientY || evt.offsetY || evt.y) - 50;
+            var yPos = (evt.pageY || evt.clientY || evt.offsetY || evt.y);
+
+            //防止label冲出右侧
+            if (xPos + parseInt($(this).css('width')) + 160 >= parseInt($("body").css('width'))) {
+                xPos = xPos - (parseInt($(this).css('width')) + 160);
+            }
+
+            //防止label冲出下侧
+            if (yPos + parseInt($(this).css('height')) + 90 >= parseInt($("body").css('height'))) {
+                yPos = yPos - (parseInt($(this).css('height')) + 90);
+            }
+
             selectID = this.id;
             divClassName = this.className;
             transmit_Tnum = this.transmit_Tnum;
