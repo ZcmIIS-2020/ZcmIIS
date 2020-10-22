@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 
 <head>
@@ -7,15 +7,21 @@
     <link rel="Shortcut Icon" href="desktop/images/zCloud.png" type="image/x-icon" />
     <link rel="stylesheet" href="desktop/desktop.css" type="text/css" />
     <script type="text/javascript" src="desktop/desktop.js"></script>
+    <style>
+        #webGL {
+            height: calc(100% - 40px);
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
-
     <div id="desktopwrap" class="wrap clear">
         <div id="desktop" class="desktop">
-            <div id="desktopContent" class="desktopContent clear"></div>
+            <div id="desktopContent" class="desktopContent clear">
+                <iframe id='webGL' src="webGL.html" style="float: right;"></iframe>
+            </div>
         </div>
-        <img height="100%" width="100%" id="bgid" class="desktopbg">
         <div class="task">
             <div id="taskIcon" class="taskIcon"></div>
             <div id="showTime" class="showTime"></div>
