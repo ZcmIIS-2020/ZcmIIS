@@ -688,10 +688,12 @@ desk.prototype = {
         this.oDesk.style.height = viewHeight() + 'px';
         this.oDesk.style.width = viewWidth() + 'px';
         this.oTask.style.bottom = 0 + 'px';
-        for (var i = 0; i < this.aDesk.length; i++) {
-            this.aDesk[i].style.height = (viewHeight() - 140) + 'px';
-            this.aDesk[i].style.width = (viewWidth() - 50) + 'px';
-        }
+        // for (var i = 0; i < this.aDesk.length; i++) {
+        //     this.aDesk[i].style.height = (viewHeight() - 140) + 'px';
+        //     this.aDesk[i].style.width = (viewWidth() - 50) + 'px';
+        // }
+        this.aDesk[0].style.height = (viewHeight() - 40) + 'px';
+        this.aDesk[0].style.width = (viewWidth() * 0.2) + 'px';
     },
     arrangeIcon: function(argMent) { //图标自动排列
         var oneWidth = (this.iconMarRgt + this.aDeskIcon[0][0].offsetWidth);
@@ -1861,7 +1863,7 @@ window.onload = function() {
         alert('本桌面不支持' + browInfo());
         return;
     }
-    $('#bgid').src = 'desktop/images/background.jpg';
+    //$('#bgid').src = 'desktop/images/background.jpg';
     new desk().init();
 
 };

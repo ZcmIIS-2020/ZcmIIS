@@ -1,0 +1,532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="LayUI/css/layui.css" media="all">
+    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/three.js"></script>
+    <script type="text/javascript" src="js/TrackballControls.js"></script>
+    <script type="text/javascript" src="js/DDSLoader.js"></script>
+    <script type="text/javascript" src="js/OBJLoader.js"></script>
+    <script type="text/javascript" src="js/OBJMTLLoader.js"></script>
+    <script type="text/javascript" src="js/DBase.js"></script>
+    <script src="LayUI/layui.js"></script>
+    <title></title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+        /* 显示信息框 */
+        
+        #label {
+            position: absolute;
+            padding: 10px;
+            z-index: 999999;
+            background: #00ff00;
+            line-height: 1;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        #percent {
+            position: absolute;
+            width: 200px;
+            height: 20px;
+            color: red;
+            text-align: center;
+            border: 1p;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="label"></div>
+    <div id="percent"></div>
+    <div id="WebGL-output"></div>
+
+    <script>
+        $(function() {
+            let data = [];
+            let wsCols = ["ip", "port"];
+            let wsURL_data = "/ZcmDB|wsurl|select * from websocket;|";
+            let ws_data = window.selectDB(wsURL_data, wsCols);
+            let wsDataLengh = ws_data.length;
+            //console.log(ws_data);
+
+            let ws_ip = ws_data[wsDataLengh - 1]['ip']
+            let ws_port = ws_data[wsDataLengh - 1]['port']
+
+            // var wsUrl = "ws://10.141.31.237:10000";
+            var wsUrl = "ws://" + ws_ip + ":" + ws_port;
+            //console.log(wsUrl)
+
+            var scene = new THREE.Scene(); //场景构建
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); //相机构建
+            var renderer = new THREE.WebGLRenderer({
+                antialias: true, //开启反锯齿
+            }); //渲染器构建
+            renderer.setClearColor(0xEEEEEE);
+            renderer.setPixelRatio(window.devicePixelRatio); // 设置分辨率
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMapEnabled = true; //激活阴影
+
+            // //构建一个坐标轴
+            // var axes = new THREE.AxisHelper(20);
+            // scene.add(axes);
+
+            //创建控件并绑定在相机上,鼠标拖拽调整视角
+            trackballControls = new THREE.TrackballControls(camera);
+            trackballControls.rotateSpeed = 1.0;
+            trackballControls.zoomSpeed = 1.0;
+            trackballControls.panSpeed = 1.0;
+            trackballControls.noZoom = false;
+            trackballControls.noPan = false;
+            trackballControls.staticMoving = true;
+            trackballControls.dynamicDampingFactor = 0.3;
+
+            var planeGeometry = new THREE.PlaneGeometry(40, 20);
+            var planeMaterial = new THREE.MeshBasicMaterial({
+                color: 0xcccccc
+            });
+            planeMaterial = new THREE.MeshLambertMaterial({
+                color: 0xffffff
+            }); //转换对光源有渲染的材质
+            var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+            let ambientLight = new THREE.AmbientLight(0xffffff, 0.4); //创建一个环境灯光
+            scene.add(ambientLight);
+            let pointLight = new THREE.PointLight(0xffffff, 0.8); //创建一个点灯光
+            camera.add(pointLight); //给模型添加灯光
+            scene.add(camera); //把视角放入环境
+
+            /*
+            OBJ和MTL是3D模型的几何模型文件和材料文件。
+
+            在最新的three.js版本(r78)中，以前的OBJMTLLoader类已废弃。
+
+            现在要加载OBJ和MTL文件，需要结合OBJLoader和MTLLoader两个类来实现，这也提供了操作的灵活性。
+
+            下述代码中首先使用MTLLoader加载szdz.mtl材料文件，然后把该材料设置给一个OBJLoader对象，以便在加载obj模型的时候进行应用。
+
+            onProgress是加载过程回调函数，onError是错误处理函数
+            */
+            var onProgress = function(xhr) {
+                if (xhr.lengthComputable) {
+                    var percentComplete = xhr.loaded / xhr.total * 100;
+                    var percent = document.getElementById("percent");
+                    percent.innerText = Math.round(percentComplete, 2) + '% 已经加载';
+                }
+            };
+            var onError = function(xhr) {};
+            var mtlLoader = new THREE.MTLLoader();
+            var StationObj = new THREE.Object3D;
+            mtlLoader.setPath('Station/szdz/');
+            mtlLoader.load('szdz.mtl', function(materials) {
+
+                materials.preload();
+
+                var objLoader = new THREE.OBJLoader();
+                objLoader.setMaterials(materials);
+                objLoader.setPath('Station/szdz/');
+                objLoader.load('szdz.obj', function(object) {
+                    object.rotation.set(Math.PI / 4, -Math.PI / 2, 0);
+                    //object.position.set(14, 4.5, -10);
+                    object.position.set(-5, -15, 0);
+                    object.scale.set(0.0001, 0.0001, 0.0001);
+
+                    // scene.add(object);
+                    StationObj.add(object);
+                }, onProgress, onError);
+
+                buildMonitorPoint();
+                scene.add(StationObj);
+            });
+
+            // function loadRec() {
+            //console.log(11111111111)
+            //context.globalCompositeOperation = "destination-over";
+            let TableCols = ["name", "ip", "channel", "number", "type", "high_alert", "low_alert", "check_parameter", "replace_sensor_id", "x", "y", "monitor_name"];
+            let URL = "/ZcmDB|sensor_info|select * from sensors;|";
+            let Data = window.selectDB(URL, TableCols);
+            //console.log(Data);
+
+
+            var selectObject;
+            //添加监测截面及雨棚，让这些方块合理的附在模型上
+            function CreateCube(x, y, z, name, type, eng_name) {
+
+                // var cubeGeo = new THREE.SphereGeometry(0.2); //创建长方体
+                // var cubeMat = new THREE.MeshBasicMaterial({ //创建材料
+                // 	color: 0x00ff00,
+                // 	wireframe: false
+                // });
+                // cubeMesh = new THREE.Mesh(cubeGeo, cubeMat); //创建球体网格模型
+                // cubeMesh.position.set(x, y,z); //设置球的坐标
+                // cubeMesh.className = "cube";
+                // cubeMesh.type = type;
+                // cubeMesh.ip = ip;
+
+                const boxWidth = 4;
+                const boxHeight = 0.2;
+                const boxDepth = 0.5;
+                const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+                const material = new THREE.MeshBasicMaterial({ //创建材料
+                    color: 0x00ff00,
+                    wireframe: false //网格线是否展示
+                });
+
+                const cube = new THREE.Mesh(geometry, material);
+                cube.position.set(x, y, z); //设置球的坐标
+                cube.className = "cube";
+                cube.type = type;
+                cube.name = name;
+                cube.eng_name = eng_name;
+
+                switch (type) {
+                    case "northsite": //北部监测截面
+                        {
+                            if (eng_name.includes('northsite9'))
+                                cube.rotation.set(Math.PI / 4, -Math.PI / 1.85, 0);
+                            else if (eng_name.includes('northsite4'))
+                                cube.rotation.set(Math.PI / 4, -Math.PI / 1.8, 0);
+                            break;
+                        }
+                    case "southsite": //南部监测截面
+                        {
+                            if (eng_name.includes('southsite9'))
+                                cube.rotation.set(Math.PI / 4, -Math.PI / 2.0, 0);
+                            else if (eng_name.includes('southsite4'))
+                                cube.rotation.set(Math.PI / 4, -Math.PI / 2.1, 0);
+                            break;
+                        }
+                    case "midsite": //中部监测截面
+                        {
+
+                            cube.rotation.set(Math.PI / 4, -Math.PI / 2, 0);
+                            break;
+                        }
+                    case "northshack": //北部雨棚
+                        {
+
+                            cube.rotation.set(Math.PI / 4, -Math.PI / 1.75, 0);
+                            break;
+                        }
+                    case "southshack": //南部雨棚
+                        {
+
+                            cube.rotation.set(Math.PI / 4, -Math.PI / 2.2, 0);
+                            break;
+                        }
+                }
+                StationObj.add(cube);
+            }
+
+
+
+
+            // 获取鼠标移动的对象
+            var selectedObject = null;
+
+            function onDocumentMouseMove(event) {
+                event.preventDefault();
+                if (selectedObject) {
+                    selectedObject.material.color.set('#00ff00');
+                    selectedObject = null;
+                    $("#label").css({
+                        display: 'none'
+                    });
+                }
+
+                var intersects = getIntersects(event);
+                if (intersects.length > 0 && selectedObject != intersects[0].object) {
+                    selectObject = intersects[0].object;
+                    if (intersects[0].object.className == 'cube') {
+                        $("#label").css({
+                            display: 'block'
+                        });
+                        var res = intersects.filter(function(res) {
+                            return res && res.object;
+                        })[0];
+                        if (res && res.object) {
+                            selectedObject = res.object;
+                            selectedObject.material.color.set('#f00');
+                        }
+                    }
+                }
+            }
+
+            // 双击监测点进入监测截面，如果没有监测点那么创建监测点
+            function onMouseDblclick(event) {
+                event.preventDefault();
+                var vector = new THREE.Vector3(); //三维坐标对象
+                vector.set(
+                    (event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1,
+                    0.5);
+                vector.unproject(camera);
+                //var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+                var intersects = getIntersects(event);
+                if (intersects.length > 0) {
+                    //removeCube();
+                    var selected = intersects[0]; //取第一个物体
+                    //console.log("x坐标:" + selected.point.x);
+                    //console.log("y坐标:" + selected.point.y);
+                    //console.log("z坐标:" + selected.point.z);
+                    let x = selected.point.x;
+                    let y = selected.point.y;
+                    let z = selected.point.z;
+
+                    if (selected.object.className == "cube") {
+                        let name = selected.object.eng_name;
+                        window.open('Station/' + name + '.html?=' + name + '', 'newWindow', 'height=500, width=950, top=120,' +
+                            'left=330, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+                    } else {
+                        // var ip=prompt("请输入监测截面名称");
+
+                        layui.use('layer', function() {
+                            var layer = layui.layer;
+                            layer.open({
+                                title: "添加监测截面",
+                                type: 2,
+                                closeBtn: 1,
+                                area: ['350px', '300px'],
+                                shade: 0.2,
+                                resize: false,
+                                btn: ['确定', '取消'],
+                                content: ['Station/edit_monitor.html', 'no'],
+                                yes: function(index, layero) {
+                                    let loading = layer.load(1);
+                                    body = layui.layer.getChildFrame('body', index);
+
+                                    let name = body.find("#name").val().trim();
+                                    //console.log(name)
+
+                                    let type = body.find("#type").val().trim();
+                                    //console.log(type)
+
+                                    let eng_name = body.find("#eng_name").val().trim();
+                                    //console.log(name)
+
+
+                                    layer.close(loading);
+                                    layer.close(index);
+
+                                    CreateCube(x, y, z, name, type, eng_name);
+                                    //console.log(1);
+                                    // document.location.href = "Station/sensor.html?=" + ip;
+                                    let URL = "/ZcmDB|monitor_site|insert into sites values('" + name + "','" + x + "','" + y + "','" + z + "','" + type + "','" + eng_name + "');|";
+                                    //console.log(URL);
+                                    window.insertDB(URL);
+                                },
+                                btn2: function(index, layero) {
+                                    layer.close(index);
+                                },
+                                cancel: function(index, layero) {
+                                    if (confirm('确定要关闭么')) { //只有当点击confirm框的确定时，该层才会关闭
+                                        layer.close(index)
+                                    }
+                                    return false;
+                                },
+                                end: function() {
+                                    //location.reload();
+                                }
+                            });
+                        });
+
+
+
+
+                    }
+
+                }
+            }
+
+            //键盘控制模型位置 Q:81   W:87  E:69   A:65  S:83  D:68
+            function onKeyDown(event) {
+                if (event.keyCode == 65) {
+                    StationObj.position.x -= 1;
+                }
+                if (event.keyCode == 68) {
+                    StationObj.position.x += 1;
+                }
+                if (event.keyCode == 87) {
+                    StationObj.position.y += 1;
+                }
+                if (event.keyCode == 83) {
+                    StationObj.position.y -= 1;
+                }
+                if (event.keyCode == 81) {
+                    StationObj.position.z += 1;
+                }
+                if (event.keyCode == 69) {
+                    StationObj.position.z -= 1;
+                }
+                if (event.keyCode == 36) {
+                    StationObj.position.x = 0;
+                    StationObj.rotation.x = 0;
+
+                    StationObj.position.y = 0;
+                    StationObj.rotation.y = 0;
+
+                    StationObj.position.z = 0;
+                    StationObj.rotation.z = 0;
+                }
+                if (event.keyCode == 46) {
+                    StationObj.remove(selectObject);
+                    let name = selectObject.name;
+                    let URL = "/ZcmDB|monitor_site|delete from sites where name = '" + name + "';|"
+                    window.deleteDB(URL)
+                }
+            }
+
+            //显示监测点
+            function buildMonitorPoint() {
+                let TableCols = ["name", "x", "y", "z", "monitorType", "eng_name"];
+                let URL = "/ZcmDB|monitor_site|select * from sites;|";
+
+                let data = window.selectDB(URL, TableCols);
+                //console.log(data);
+
+                for (let v in data) {
+                    // if (1 < 2) {
+                    // 	CreateYujingCube(data[v]["x"], data[v]["y"], data[v]["z"], data[v]["name"], data[v]["monitorType"], data[v]["eng_name"]);
+                    // } else if (1 > 2) {
+                    CreateCube(data[v]["x"], data[v]["y"], data[v]["z"], data[v]["name"], data[v]["monitorType"], data[v]["eng_name"]);
+                    //}
+                }
+            }
+
+            // 获取与射线相交的对象数组
+            function getIntersects(event) {
+                event.preventDefault();
+
+                // 声明 raycaster 和 mouse 变量
+                var raycaster = new THREE.Raycaster();
+                var mouse = new THREE.Vector2();
+
+                // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+                //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+                raycaster.setFromCamera(mouse, camera);
+
+                // 获取与射线相交的对象数组，其中的元素按照距离排序，越近的越靠前
+                var intersects = raycaster.intersectObjects(scene.children, true);
+
+                //返回选中的对象
+                return intersects;
+            }
+
+            // 窗口变动触发的方法
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            // 初始化灯光
+            function initLight() {
+                light = new THREE.SpotLight(0xffffff);
+                light.position.set(0, 30, -20);
+                light.castShadow = true;
+
+                scene.add(light);
+                scene.add(new THREE.AmbientLight(0x5C5C5C));
+            }
+
+            // 更新div的位置
+            function renderDiv(object) {
+                // 获取窗口的一半高度和宽度
+                var halfWidth = window.innerWidth / 2;
+                var halfHeight = window.innerHeight / 2;
+
+                // 逆转相机求出二维坐标
+                var vector = object.position.clone().project(camera);
+
+                // 修改 div 的位置
+                $("#label").css({
+                    left: vector.x * halfWidth + halfWidth,
+                    top: -vector.y * halfHeight + halfHeight - object.position.y
+                });
+                $("#label").text(object.name);
+            }
+
+            // 更新控件
+            function update() {
+                controls.update();
+                controls.handleResize();
+            }
+
+            // 初始化轨迹球控件
+            function initControls() {
+                controls = new THREE.TrackballControls(camera, renderer.domElement);
+                // controls.noRotate = true;
+                controls.noPan = true;
+            }
+
+            // 删除模型
+            function deleteGroup(group) {
+                //console.log(group);
+                if (!group) return;
+                // 删除掉所有的模型组内的mesh
+                group.traverse(function(item) {
+                    if (item instanceof THREE.Mesh) {
+                        item.geometry.dispose(); // 删除几何体
+                        item.material.dispose(); // 删除材质
+                    }
+                });
+            }
+
+
+            // 初始化
+            function init() {
+                // buildMonitorPoint();
+                initLight();
+                initControls();
+
+                addEventListener("mousemove", onDocumentMouseMove, false);
+
+                addEventListener('dblclick', onMouseDblclick, false);
+                addEventListener('resize', onWindowResize, false);
+                addEventListener('keydown', onKeyDown, false);
+                // addEventListener( 'keydown', onKeyDownDelCube, false );
+            }
+
+            function animate() {
+                if (selectObject != undefined && selectObject != null) {
+                    renderDiv(selectObject);
+                }
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+                update();
+            }
+
+            init();
+            animate();
+
+            //渲染视图视角  -30,20,30
+            camera.position.set(0, 0, 30);
+
+            camera.lookAt(scene.position)
+            $("#WebGL-output").append(renderer.domElement);
+            renderScene();
+
+            function renderScene() {
+                var clock = new THREE.Clock();
+                var delta = clock.getDelta();
+                trackballControls.update(delta);
+                requestAnimationFrame(renderScene);
+                renderer.render(scene, camera);
+            }
+        })
+    </script>
+
+</body>
+
+</html>

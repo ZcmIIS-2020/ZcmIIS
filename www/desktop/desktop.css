@@ -559,7 +559,7 @@ body {
     bottom: 0px;
     overflow: hidden;
     z-index: 20;
-    background-color: hsla(0, 0%, 100%, 0.1);
+    background-color: hsla(263, 88%, 47%, 0.65);
 }
 
 .zCloud {
