@@ -1,269 +1,194 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Flot</title>
-	<link href="flot/examples/examples.css" rel="stylesheet" type="text/css">
 
-	
-	<meta charset="utf-8"><link rel="icon" href="https://static.jianshukeji.com/highcharts/images/favicon.ico">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<style>
-		/* css 代码  */
-	</style>
-	<script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
-	<script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
-	<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
-	<script src="https://code.highcharts.com.cn/highcharts/themes/grid-light.js"></script>
-	<script type="text/javascript" src="../js/DBase.js" ></script>
-	<script type="text/javascript" src="../js/jquery-2.0.3.min.js" ></script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Flot</title>
+    <link href="flot/examples/examples.css" rel="stylesheet" type="text/css">
+
+
+    <meta charset="utf-8">
+    <link rel="icon" href="https://static.jianshukeji.com/highcharts/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* css 代码  */
+    </style>
+    <script type="text/javascript" src="../js/jquery-2.0.3.min.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/boost.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/themes/sand-signika.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script type="text/javascript" src="../js/DBase.js"></script>
+
 
 </head>
+
 <body>
-	<div id="container" style="min-width:400px;height:400px"></div>
-
-	<script>
-		let low_alert;
-
-			var thisURL = document.URL;
-			var getval =thisURL.split('?')[1];
-			let showval_total= getval.split("=")[1];
-
-			console.log(showval_total)
-			var n1 = showval_total.length;
-			
-			var n2 = showval_total.indexOf(',');
-			var n3 = showval_total.indexOf(':');
-			var n4 = showval_total.indexOf('*');
-			
-			// let ip = showval_total.substring(0, n2);
-			let ip = showval_total.substring(0, n2);
-			let Tnum = showval_total.substring(n2+1, n3);
-			let Snum = showval_total.substring(n2+1, n3);
-			let transmit_Tnum = 't' + showval_total.substring(n2+1, n3);
-			let transmit_Snum = 'D' + showval_total.substring(n3+1, n4);
-			// let transmit_Tnum = 't1';
-			// let transmit_Snum = 'D1';
-			low_alert = showval_total.substring(n4+1);
-			console.log(ip)
-			console.log(transmit_Tnum)
-			console.log(transmit_Snum)
-			console.log(low_alert)
-
-			let TableCols = ["D0", "D1","D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", 
-			"D12", "D13", "D14", "D15", "D16"];
-			flot_data_url = "/ZcmDB|"+ ip + "|select D0, "+ transmit_Snum +" from "+ transmit_Tnum +";|";
-			console.log(flot_data_url)
-
-			let flot_data = window.selectDB(flot_data_url, TableCols);
-			let flot_data_new = flot_data.slice(-50, -1);
-
-			let data_chart = [];
-			let data_len = flot_data_new.length
-			for (var i = 0; i < data_len; i++){
-				data_chart.push(flot_data_new[i]['D1']);
-			
-			}
-			
-			
-
-		Highcharts.setOptions({
-			global: {
-					useUTC: false
-			}
-		});
-		
-		// websocket
-		let data = [];
-		let dataDic = {};
-		let wsCols = ["ip","port"];
-		let wsURL_data = "/ZcmDB|wsurl|select * from websocket;|";
-		let ws_data = window.selectDB(wsURL_data, wsCols);
-		let wsDataLengh = ws_data.length;
-		console.log(ws_data);
-
-		let ws_ip = ws_data[wsDataLengh-1]['ip']
-		let ws_port = ws_data[wsDataLengh-1]['port']
-
-		// var wsUrl = "ws://10.141.31.237:10000";
-		var wsUrl = "ws://" + ws_ip + ":" + ws_port;
-
-		testWebSocket();
-
-		function testWebSocket() {
-
-			websocket = new WebSocket(wsUrl);
-			websocket.onopen = function(evt) {
-				onOpen(evt)
-			};
-
-			websocket.onclose = function(evt) {
-				onClose(evt)
-			};
-
-			websocket.onmessage = function(evt) {
-				onMessage(evt)
-			};
-
-			websocket.onerror = function(evt) {
-				onError(evt)
-			};
-		}
-
-		function onOpen(evt) {
-			writeToScreen("CONNECTED");
-			doSend("WebSocket rocks");
-		}
-
-		function onClose(evt) {
-			writeToScreen("DISCONNECTED");
-			websocket.close();
-		}
-
-		function onMessage(evt) {
-			writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
-			var result=[];
-			function Prase_web(t)
-			{
-				var k=-1;
-
-				k=t.indexOf("|");
-				if(k>=0)
-				{
-					result.push(t.substr(0,k));
-					t=t.substr(k+1);
-					if (t.length > 0) {
-						Prase_web(t, 0)
-					}
-				}
-				else t="";		
-
-			return result;
-			}
-
-			let arr = Prase_web(evt.data)
-			// for (var i = 0; i < sensor_ip.length; i++){
-			// 	if(arr[1] == sensor_ip[i]){
-			dataDic[ip] = arr.slice(2);
-			// 	}
-			// }
-			console.log(dataDic);
-		}
-
-		function onError(evt) {
-			writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-		}
-
-		function doSend(message) {
-			writeToScreen("SENT: " + message);
-			websocket.send(message);
-		}
-
-		function writeToScreen(message) {
-			var pre = document.createElement("p");
-			pre.style.wordWrap = "break-word";
-			pre.innerHTML = message;
-		}
-
-		function array2dic(data) {
-			dic = {};
-			var index_start = 0;
-			var index_end = 0;
-
-			if(data[0] != -1){
-				for (var i = 1; i < 17; i++) {
-					var len_data_i = Number(data[index_start]);
-
-					if (len_data_i == -1) {
-						index_end = index_start;
-						dic[i] = [];
-					} else {
-						index_end = index_start + len_data_i;
-						dic[i] = data.slice(index_start + 1, index_end + 1);
-					}
+    <div id="container" style="margin: 0 auto"></div>
 
 
-					// 更新index_start
-					index_start = index_end + 1;
-				}
-			}
-
-			return dic;
-		}
-
-
-		
-		function activeLastPointToolip(chart) {
-				var points = chart.series[0].points;
-				chart.tooltip.refresh(points[points.length -1]);
-		}
-		var chart = Highcharts.chart('container', {
-				chart: {
-						type: 'spline',
-						marginRight: 10,
-						events: {
-								load: function () {
-										var series = this.series[0],
-												chart = this;
-										activeLastPointToolip(chart);
-										setInterval(function () {
-										
-
-											data_tmp = dataDic[ip];
-											data_dic = array2dic(data_tmp);
-
-											console.log(data_dic[1]);
-											var x = (new Date()).getTime(), // 当前时间
-													y = Number(data_dic[Tnum][Snum-1]);          // 随机值
-
-											series.addPoint([x, y], true, true);
-											activeLastPointToolip(chart);
-										}, 5000);
-								}
-						}
-				},
-				title: {
-						text: '动态模拟实时数据'
-				},
-				xAxis: {
-						type: 'datetime',
-						tickPixelInterval: 150
-				},
-				yAxis: {
-						title: {
-								text: null
-						}
-				},
-				tooltip: {
-						formatter: function () {
-								return '<b>' + this.series.name + '</b><br/>' +
-										Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-										Highcharts.numberFormat(this.y, 2);
-						}
-				},
-				legend: {
-						enabled: false
-				},
-				series: [{
-						name: '传感器数据',
-						data: (function () {
-							console.log([data_chart[0]]);
-							// 生成随机值
-							var data = [],
-									time = (new Date()).getTime(),
-									i;
-							for (i = -data_len; i <= 0; i += 1) {
-
-									data.push({
-											x: time + i * 2000,
-											y: Number(data_chart[i+data_len-2])
-									});
-							}
-							return data;
-						}())
-				}]
-		}); 	
-
-	</script>
 </body>
+<script>
+    //解析url路径,获取参数
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+    }
+
+    var ip = getURLParameter('ip');
+    var T = getURLParameter('T');
+    var D = getURLParameter('D');
+    var low_alert = getURLParameter('low_alert');
+    var name = getURLParameter('name');
+    console.log(ip)
+    console.log(T)
+    console.log(D)
+    console.log(low_alert)
+    console.log(name)
+
+
+    let TableCols = ["D0", D];
+    ip = '192.168.8.35';
+    flot_data_url = "/ZcmDB|" + ip + "|select D0, " + D + " from " + T + " order by D0;|";
+    //console.log(flot_data_url)
+
+    let flot_data = window.selectDB(flot_data_url, TableCols);
+    //console.log(flot_data)
+
+    let Data = [];
+
+    for (let i in flot_data) {
+        //返回累计毫秒数(从1970/1/1午夜),因为hightcharts的时间数据格式为这个
+        let time = new Date(flot_data[i]["D0"]).getTime();
+        let data = parseFloat(flot_data[i][D]);
+        Data.push([time, data]);
+    }
+
+    //默认最多显示50W条数据
+    Data = Data.slice(-500000);
+    //console.log(Data);
+    console.time('line');
+    Highcharts.chart('container', {
+        chart: {
+            zoomType: 'x'
+        },
+        boost: {
+            useGPUTranslations: true
+        },
+        title: {
+            text: name + '的历史数据查询'
+        },
+        tooltip: {
+            dateTimeLabelFormats: {
+                day: '%Y-%m-%d %H:%M:%S'
+            },
+            followPointer: true,
+        },
+        xAxis: { //2019-08-12 13:46:25
+            type: 'datetime',
+            tickInterval: 1000, //单位：毫秒   
+            dateTimeLabelFormats: {
+                day: '%Y-%m-%d %H:%M:%S'
+            },
+        },
+        series: [{
+            name: name,
+            data: Data,
+            lineWidth: 0.5,
+        }]
+    });
+    console.timeEnd('line');
+
+
+    // // websocket
+    // let data = [];
+    // let dataDic = {};
+    // let wsCols = ["ip", "port"];
+    // let wsURL_data = "/ZcmDB|wsurl|select * from websocket;|";
+    // let ws_data = window.selectDB(wsURL_data, wsCols);
+    // let wsDataLengh = ws_data.length;
+    // //console.log(ws_data);
+
+    // let ws_ip = ws_data[wsDataLengh - 1]['ip']
+    // let ws_port = ws_data[wsDataLengh - 1]['port']
+
+    // // var wsUrl = "ws://10.141.31.237:10000";
+    // var wsUrl = "ws://" + ws_ip + ":" + ws_port;
+
+    // testWebSocket();
+
+    // function testWebSocket() {
+
+    //     websocket = new WebSocket(wsUrl);
+    //     websocket.onopen = function(evt) {
+    //         onOpen(evt)
+    //     };
+
+    //     websocket.onclose = function(evt) {
+    //         onClose(evt)
+    //     };
+
+    //     websocket.onmessage = function(evt) {
+    //         onMessage(evt)
+    //     };
+
+    //     websocket.onerror = function(evt) {
+    //         onError(evt)
+    //     };
+    // }
+
+    // function onOpen(evt) {
+    //     writeToScreen("CONNECTED");
+    //     doSend("WebSocket rocks");
+    // }
+
+    // function onClose(evt) {
+    //     writeToScreen("DISCONNECTED");
+    //     websocket.close();
+    // }
+
+    // function onMessage(evt) {
+    //     writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+    //     var result = [];
+
+    //     function Prase_web(t) {
+    //         var k = -1;
+
+    //         k = t.indexOf("|");
+    //         if (k >= 0) {
+    //             result.push(t.substr(0, k));
+    //             t = t.substr(k + 1);
+    //             if (t.length > 0) {
+    //                 Prase_web(t, 0)
+    //             }
+    //         } else t = "";
+
+    //         return result;
+    //     }
+
+    //     let arr = Prase_web(evt.data)
+    //         // for (var i = 0; i < sensor_ip.length; i++){
+    //         // 	if(arr[1] == sensor_ip[i]){
+    //     dataDic[ip] = arr.slice(2);
+    //     // 	}
+    //     // }
+    //     //console.log(dataDic);
+    // }
+
+    // function onError(evt) {
+    //     writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+    // }
+
+    // function doSend(message) {
+    //     writeToScreen("SENT: " + message);
+    //     websocket.send(message);
+    // }
+
+    // function writeToScreen(message) {
+    //     var pre = document.createElement("p");
+    //     pre.style.wordWrap = "break-word";
+    //     pre.innerHTML = message;
+    // }
+</script>
+
 </html>

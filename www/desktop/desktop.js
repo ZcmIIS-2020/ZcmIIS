@@ -46,16 +46,17 @@ function scrollW() {
     return document.body.scrollWidth;
 }
 
-function $(str, obj) {
-    var id = /^#[\w\d]+/;
-    var tag = /^<\w{1,}>$/;
-    if (id.test(str)) {
-        return (obj || document).getElementById(str.substring(1));
-    }
-    if (tag.test(str)) {
-        return (obj || document).getElementsByTagName(str.substring(1, (str.length - 1)));
-    }
-}
+//为了不污染jquery，注释他们自己写的$()方法
+// function $(str, obj) {
+//     var id = /^#[\w\d]+/;
+//     var tag = /^<\w{1,}>$/;
+//     if (id.test(str)) {
+//         return (obj || document).getElementById(str.substring(1));
+//     }
+//     if (tag.test(str)) {
+//         return (obj || document).getElementsByTagName(str.substring(1, (str.length - 1)));
+//     }
+// }
 
 function browInfo() {
     var info = navigator.userAgent;
@@ -357,11 +358,12 @@ var zh_windowCount = 0,
 
 
 function desk() {
-    this.oWrap = $('#desktopwrap'); //整个背景桌面
-    this.oDesk = $('#desktop'); //
-    this.oTask = $('#taskIcon'); //任务栏
-    this.oBg = $('#bgWindow'); //设置背景图片的界面
-    this.oDeskContent = $('#desktopContent'); //滑动桌面的界面
+    //因为之前注释掉了他们自己写的$()方法，所以此处$()实际上为jquery对象，将它转为dom对象，否则后面会出很多错误
+    this.oWrap = $('#desktopwrap').get(0); //整个背景桌面
+    this.oDesk = $('#desktop').get(0); //
+    this.oTask = $('#taskIcon').get(0); //任务栏
+    this.oBg = $('#bgWindow').get(0); //设置背景图片的界面
+    this.oDeskContent = $('#desktopContent').get(0); //滑动桌面的界面
 
     this.aDeskCount = zh_deskIcon.length; //桌面个数
     this.iconMarRgt = 50;
@@ -449,7 +451,6 @@ desk.prototype = {
             this.aDesk.push(desk);
             oFrag.appendChild(desk);
         }
-
         this.oDeskContent.appendChild(oFrag);
     },
     createApp: function() { //生成桌面图标
@@ -1865,5 +1866,4 @@ window.onload = function() {
     }
     //$('#bgid').src = 'desktop/images/background.jpg';
     new desk().init();
-
 };
