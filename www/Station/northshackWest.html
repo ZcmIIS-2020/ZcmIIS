@@ -344,9 +344,9 @@
             clearTimeout(clickTimeId);
             if (divClassName == "rect") {
 
-                let transmit_data = transmit_ip + ',' + transmit_Tnum + ':' + transmit_Snum + '*' + low_alert;
+                let transmit_data = "ip=" + transmit_ip + '&T=T' + transmit_Tnum + '&D=D' + transmit_Snum + '&low_alert=' + low_alert + "&name=" + transmit_name;
 
-                window.open('flot.html?=' + encodeURI(transmit_data), '_self', 'height=600, width=900, top=0,' +
+                window.open('flot.html?' + encodeURI(transmit_data), '_self', 'height=600, width=900, top=0,' +
                     'left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
             }
 
