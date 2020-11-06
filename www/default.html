@@ -293,7 +293,8 @@
                 $("#webSocket").css("background-image", "url(./desktop/images/socket_on.png)");
             }
             ws.onmessage = function(e) {　　 //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据　　
-                //console.log(e.data);　
+                console.log(e.data);　
+                console.log(e.data);　
                 var strs = e.data.split('|');
                 socketData = [];
                 for (let i = 2, t = 1, index = 0; i < strs.length;) {
