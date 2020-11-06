@@ -40,11 +40,11 @@
     var D = getURLParameter('D');
     var low_alert = getURLParameter('low_alert');
     var name = getURLParameter('name');
-    console.log(ip)
-    console.log(T)
-    console.log(D)
-    console.log(low_alert)
-    console.log(name)
+    // console.log(ip)
+    // console.log(T)
+    // console.log(D)
+    // console.log(low_alert)
+    // console.log(name)
 
 
     let TableCols = ["D0", D];
@@ -58,7 +58,7 @@
     let Data = [];
 
     for (let i in flot_data) {
-        //返回累计毫秒数(从1970/1/1午夜),因为hightcharts的时间数据格式为这个
+        //返回累计毫秒数(从1970/1/1 00:00：00),因为hightcharts的时间数据格式为这个
         let time = new Date(flot_data[i]["D0"]).getTime();
         let data = parseFloat(flot_data[i][D]);
         Data.push([time, data]);
