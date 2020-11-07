@@ -70,9 +70,9 @@
 
         //用来存储websocket发来的各个通道下D1到D16实时数据
         var socketData = [];
-
-        //每秒都测试websocket连接
-        setInterval(webSocketEvent, 1000);
+        var lockReconnect = false; //避免websocket重复连接
+        //websocket连接
+        webSocketEvent();
 
         //创建十三个界面图表，默认隐藏
         var TableCols = ["name", "x", "y", "z", "monitorType", "eng_name"];
@@ -101,7 +101,6 @@
             //当前通道号和ip
             let currChannel = channelData[0]["channel"];
             let currIp = channelData[0]["ip"];
-            currIp = '192.168.8.35';
 
             var series = prepareSeriesData(currChannel, currIp);
 
@@ -177,26 +176,29 @@
             //把该截面所有的通道显示在highchart上
             for (let i in channelData) {
                 let channelNum = channelData[i]["channel"];
-                let radio = $("<input type='radio' name='" + eng_name + "Radio' value='" + channelNum + "'/><label for='" + eng_name + "Radio'>" + channelNum + "   </label>");
+                let radio = $("<input type='radio' id='" + i + "' name='" + eng_name + "Radio' value='" + channelNum + "'/><label for='" + eng_name + "Radio'>" + channelNum + "   </label>");
                 if (i == 0)
-                    radio = $("<input type='radio' name='" + eng_name + "Radio' value='" + channelNum + "' checked='true'/><label for='" + eng_name + "Radio'>" + channelNum + "    </label>");
+                    radio = $("<input type='radio' id='" + i + "' name='" + eng_name + "Radio' value='" + channelNum + "' checked='true'/><label for='" + eng_name + "Radio'>" + channelNum + "    </label>");
                 $("#" + eng_name + "Radios").append(radio);
             }
 
             //为单选按钮添加change事件，当通道号发生改变，图表要相应改变
             $('input[type=radio][name=' + eng_name + 'Radio]').change(function() {
-                //更新当前通道值
-                currChannel = $(this).val();
+                let index = $("input[name='" + eng_name + "Radio']:checked").attr("id");
+                //更新当前通道值和ip
+                currChannel = channelData[index]["channel"];
+                currIp = channelData[index]["ip"];
                 //更新标题
                 chart.setTitle({
                     text: name + '-通道' + currChannel + '-实时数据'
                 });
                 let series = prepareSeriesData(currChannel, currIp);
+                //console.log(series);
                 //更新线的值
-                chart.update(series);
+                chart.update({
+                    series: series
+                });
             });
-
-            //console.log($("input[name='" + eng_name + "Radio']:checked").val());
         }
         $(".highChart").hide();
         $("#southshackWestChart").show();
@@ -287,14 +289,15 @@
 
         //连接webSocket，并且设置onopen、onmessage、onclose、onerror事件
         function webSocketEvent() {
-            var ws = new WebSocket("ws://192.168.8.35"); //申请一个WebSocket对象，参数是服务端地址，同http协议使用http://开头一样，WebSocket协议的url使用ws://开头，另外安全的WebSocket协议使用wss://开头
+            var url = "ws://192.168.8.35";
+            var ws = new WebSocket(url); //申请一个WebSocket对象，参数是服务端地址，同http协议使用http://开头一样，WebSocket协议的url使用ws://开头，另外安全的WebSocket协议使用wss://开头
             ws.onopen = function() {　　 //当WebSocket创建成功时，触发onopen事件
                 console.log("socket connected");　　
                 $("#webSocket").css("background-image", "url(./desktop/images/socket_on.png)");
             }
             ws.onmessage = function(e) {　　 //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据　　
                 console.log(e.data);　
-                console.log(e.data);　
+                //处理数据，并存下来
                 var strs = e.data.split('|');
                 socketData = [];
                 for (let i = 2, t = 1, index = 0; i < strs.length;) {
@@ -319,14 +322,25 @@
             }
             ws.onclose = function(e) {　　 //当客户端收到服务端发送的关闭连接请求时，触发onclose事件　　
                 console.log("socket close");
-                socketData = [];
                 $("#webSocket").css("background-image", "url(./desktop/images/socket_off.png)");
+                reconnect();
             }
             ws.onerror = function(e) {　　 //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件　
                 console.log("socket error");
-                socketData = [];
                 $("#webSocket").css("background-image", "url(./desktop/images/socket_error.png)");
+                reconnect();
             }
+        }
+
+        //若websocket断开或出错，尝试重新连接
+        function reconnect() {
+            if (lockReconnect) return;
+            lockReconnect = true;
+            //没连接上会一直重连，设置延迟避免请求过多
+            setTimeout(function() {
+                webSocketEvent();
+                lockReconnect = false;
+            }, 2000);
         }
 
         function dateFormat(fmt, date) {
