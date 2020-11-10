@@ -42,6 +42,7 @@
             right: 0px;
             z-index: 100;
             position: absolute;
+            height: 500px;
         }
     </style>
 </head>
@@ -94,7 +95,8 @@
 
             //该截面所有的通道号
             TableCols = ["ip", "channel"];
-            URL = "/ZcmDB|sensor_info|select distinct ip, channel from sensors where monitor_name = '" + eng_name + "' order by channel;|";
+            //使用distinct达不到效果；+0因为channel是字符串类型
+            URL = "/ZcmDB|sensor_info|select ip, min(channel) channel from sensors where monitor_name = '" + eng_name + "' group by channel order by channel + 0;|";
             let channelData = window.selectDB(URL, TableCols);
             //console.log(channelData);
 
@@ -138,6 +140,23 @@
                             }, 1000);
 
                         }
+                    }
+                },
+                exporting: {
+                    enabled: true,
+                    buttons: {
+                        contextButton: {
+                            y: 30
+                        },
+                        // symbol:['circle', 'diamond', 'square', 'triangle', 'triangle-down','menu'],
+                        minButton: {
+                            symbol: 'triangle-down',
+                            symbolStrokeWidth: 1,
+                            y: 30,
+                            onclick: function() {
+                                $("#" + eng_name + "Chart").hide();
+                            }
+                        },
                     }
                 },
                 boost: {
@@ -205,60 +224,9 @@
 
 
 
-        //让highChartDiv可被鼠标拖拽
-        //console.log($(".chartTitle"));
-        // $(".chartTitle").each(function() {
-        //     var flag = false,
-        //         vHeight, vWidth, cHeight, cWdith;
-        //     $(this).click(function() {
-        //         alert('s')
-        //     });
-        //     target.mousedown(function(e) {
-        //         flag = true;
-        //         vHeight = e.pageY;
-        //         vWidth = e.pageX;
-        //         cHeight = vHeight - $(this).offset().top;
-        //         cWdith = vWidth - $(this).offset().left;
-        //         //alert("divshow" + $(this).offset().top + " divvHeight" + vHeight);
-        //         //alert("高" + cHeight + " 宽" + cWdith);
-        //     })
 
-        //     var showWidth = highChartDiv.width();
-        //     var showHeight = highChartDiv.height();
-        //     var documentWidth = $(document).width();
-        //     var documentHeight = $(document).height();
-
-        //     target.mousemove(function(e) {
-        //         if (flag) {
-        //             var divheight = e.pageY - cHeight; //窗口要移动到的位置
-        //             var divwidth = e.pageX - cWdith; //窗口要移动到的位置
-        //             //$("#la1").text(divheight + "w" + divwidth + "win" + showWidth + " x " + documentWidth + "" + showWidth);
-        //             if (divwidth < 0) {
-        //                 divwidth = 0;
-        //             }
-        //             if (divheight < 50) {
-        //                 divheight = 50;
-        //             }
-        //             if (divwidth > documentWidth - showWidth) {
-        //                 divwidth = documentWidth - showWidth - 5;
-        //             }
-        //             if (divheight > documentHeight - showHeight) {
-        //                 divheight = documentHeight - showHeight - 5;
-        //             }
-        //             highChartDiv.css({
-        //                 "left": divwidth,
-        //                 "top": divheight
-        //             });
-        //         }
-        //     });
-
-        //     target.mouseup(function() {
-        //         flag = false;
-        //     });
-        // });
 
         //配置webSocket图表的图片，添加鼠标悬浮、离开事件
-
         function webSocketConfig() {
             $("#webSocket").css("background-image", "url(./desktop/images/socket_off.png)");
             //添加鼠标悬浮事件
@@ -417,7 +385,65 @@
 
             return series;
         }
+
+        //让highChartDiv可被鼠标拖拽
+        //console.log($(".chartTitle"));
+        // $(".chartTitle").each(function() {
+        //     var flag = false,
+        //         vHeight, vWidth, cHeight, cWdith;
+        //     $(this).click(function() {
+        //         alert('s')
+        //     });
+        //     target.mousedown(function(e) {
+        //         flag = true;
+        //         vHeight = e.pageY;
+        //         vWidth = e.pageX;
+        //         cHeight = vHeight - $(this).offset().top;
+        //         cWdith = vWidth - $(this).offset().left;
+        //         //alert("divshow" + $(this).offset().top + " divvHeight" + vHeight);
+        //         //alert("高" + cHeight + " 宽" + cWdith);
+        //     })
+
+        //     var showWidth = highChartDiv.width();
+        //     var showHeight = highChartDiv.height();
+        //     var documentWidth = $(document).width();
+        //     var documentHeight = $(document).height();
+
+        //     target.mousemove(function(e) {
+        //         if (flag) {
+        //             var divheight = e.pageY - cHeight; //窗口要移动到的位置
+        //             var divwidth = e.pageX - cWdith; //窗口要移动到的位置
+        //             //$("#la1").text(divheight + "w" + divwidth + "win" + showWidth + " x " + documentWidth + "" + showWidth);
+        //             if (divwidth < 0) {
+        //                 divwidth = 0;
+        //             }
+        //             if (divheight < 50) {
+        //                 divheight = 50;
+        //             }
+        //             if (divwidth > documentWidth - showWidth) {
+        //                 divwidth = documentWidth - showWidth - 5;
+        //             }
+        //             if (divheight > documentHeight - showHeight) {
+        //                 divheight = documentHeight - showHeight - 5;
+        //             }
+        //             highChartDiv.css({
+        //                 "left": divwidth,
+        //                 "top": divheight
+        //             });
+        //         }
+        //     });
+
+        //     target.mouseup(function() {
+        //         flag = false;
+        //     });
+        // });
     });
+
+    //为了使子类能调用，写在外面
+    function showChart(chartId) {
+        $(".highChart").hide();
+        $("#" + chartId + "Chart").show();
+    }
 </script>
 
 </html>
