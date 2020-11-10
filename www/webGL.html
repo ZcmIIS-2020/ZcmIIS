@@ -346,6 +346,34 @@
                 }
             }
 
+            // 单击监测点进入监测截面，显示对应的实时数据检测折线图
+            function onMouseClick(event) {
+                event.preventDefault();
+                var vector = new THREE.Vector3(); //三维坐标对象
+                vector.set(
+                    (event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1,
+                    0.5);
+                vector.unproject(camera);
+                //var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+                var intersects = getIntersects(event);
+                if (intersects.length > 0) {
+                    //removeCube();
+                    var selected = intersects[0]; //取第一个物体
+                    //console.log("x坐标:" + selected.point.x);
+                    //console.log("y坐标:" + selected.point.y);
+                    //console.log("z坐标:" + selected.point.z);
+                    let x = selected.point.x;
+                    let y = selected.point.y;
+                    let z = selected.point.z;
+
+                    if (selected.object.className == "cube") {
+                        //console.log(selected.object.eng_name);
+                        //调用父类的方法
+                        parent.showChart(selected.object.eng_name);
+                    }
+                }
+            }
+
             //键盘控制模型位置 Q:81   W:87  E:69   A:65  S:83  D:68
             function onKeyDown(event) {
                 if (event.keyCode == 65) {
@@ -491,8 +519,8 @@
                 initControls();
 
                 addEventListener("mousemove", onDocumentMouseMove, false);
-
                 addEventListener('dblclick', onMouseDblclick, false);
+                addEventListener('click', onMouseClick, false);
                 addEventListener('resize', onWindowResize, false);
                 addEventListener('keydown', onKeyDown, false);
                 // addEventListener( 'keydown', onKeyDownDelCube, false );
