@@ -53,7 +53,33 @@
         <div id="desktop" class="desktop">
             <div id="desktopContent" class="desktopContent clear">
                 <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
-                <img src="./desktop/images/metro.png" style="padding: 219 0 0 500; ">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400" style="margin:250 0 0 400;border: 1px solid black;">
+                    <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+                    
+                    <line id="line2" x1="350" y1="200" x2="650" y2="100" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+
+                    <circle id="cir1" cx="30" cy="350" r="10"  fill="grey" />
+                    
+                    <circle id="cir2" cx="350" cy="200" r="10"  fill="grey" />
+                    
+                    <circle id="cir3" cx="650" cy="100" r="10"  fill="grey" />
+
+                    
+                    <defs>
+                        <path id="path1" d="M30,340 L350,190" />
+                        <path id="path2" d="M350,190 L650,90" />
+                    </defs>
+                    <text id="text1" x="50" y="20" style="fill:red;fill-opacity:0">
+                        <textPath xlink:href="#path1">检测到障碍物！</textPath>
+                    </text>
+                    <text id="text2" x="50" y="20" style="fill:red;fill-opacity:0">
+                        <textPath xlink:href="#path2">检测到障碍物！</textPath>
+                    </text>
+
+                    <text x="10" y="380" fill="black">湖工大</text>
+                    <text x="330" y="230" fill="black">板桥</text>
+                    <text x="630" y="130" fill="black">野芷湖</text>
+                  </svg>
             </div>
         </div>
         <div class="task">
@@ -68,6 +94,52 @@
 </body>
 <script>
     $(document).ready(function() {
+
+        function barrierDetection() {
+            let sockets = ["192.168.8.35|192.168.8.131|1|1|2|1",
+                "192.168.8.35|192.168.8.131|1|-1|2|1",
+                "192.168.8.35|192.168.8.131|1|1|2|1",
+                "192.168.8.35|192.168.8.131|1|1|2|-1",
+                "192.168.8.35|192.168.8.131|1|1|2|1",
+                "192.168.8.35|192.168.8.131|1|-1|2|-1"
+            ];
+            let index = 0;
+            setInterval(function() {
+                let socketInfo = sockets[index];
+                let strs = socketInfo.split("|");
+                for (let i = 2; i < strs.length; i += 2) {
+                    let pathId = parseInt(strs[i]);
+                    let state = parseInt(strs[i + 1]);
+                    let colorStyle, opacity;
+                    if (state > 0) {
+                        colorStyle = 'rgb(32, 230, 14)';
+                        opacity = 0;
+                    } else {
+                        colorStyle = 'red';
+                        opacity = 0.7;
+                    }
+                    switch (pathId) {
+                        case 1:
+                            {
+                                $("#line1").css('stroke', colorStyle);
+                                $("#text1").css('fill-opacity', opacity);
+                                break;
+                            }
+                        case 2:
+                            {
+                                $("#line2").css('stroke', colorStyle);
+                                $("#text2").css('fill-opacity', opacity);
+                                break;
+                            }
+                    }
+
+                }
+                index++;
+                if (index == sockets.length)
+                    index = 0;
+            }, 1000);
+        }
+        barrierDetection();
         webSocketConfig();
 
         //用来存储websocket发来的各个通道下D1到D16实时数据
