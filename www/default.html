@@ -27,7 +27,7 @@
             position: absolute;
             padding: 10px;
             z-index: 999999;
-            background: #00ff00;
+            background: #ffffff;
             line-height: 1;
             border-radius: 5px;
             display: none;
@@ -38,7 +38,7 @@
             /*透明度 */
             opacity: 0.5;
             /*设置透明度 子元素不继承透明度*/
-            margin: 0;
+            margin: 0px;
             right: 0px;
             z-index: 100;
             position: absolute;
@@ -52,7 +52,8 @@
     <div id="desktopwrap" class="wrap clear">
         <div id="desktop" class="desktop">
             <div id="desktopContent" class="desktopContent clear">
-                <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
+                <div id="settime" class="settime"></div>
+                <iframe id='webGL' src="webGL.html" style="float: left;"></iframe>
             </div>
         </div>
         <div class="task">
@@ -67,6 +68,30 @@
 </body>
 <script>
     $(document).ready(function() {
+        $("#showTime").click(function(){
+            $("#settime").slideToggle("fast");
+        });
+        $("#showTime").hover(function(evt){
+            var xPos = $(window).width()-165;//(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
+            var yPos = $(window).height() - 80;
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = date.getMonth()+1;
+            var da = date.getDate();
+            var day = date.getDay();
+            $("#label").css({
+                left: xPos,
+                top: yPos,
+                display: 'block'
+            });
+            $("#label").html(year+"年"+month+"月"+da+"日<br/>星期"+day);
+        });
+        $("#showTime").mouseleave(function(evt) {
+            $("#label").css({
+               display: 'none'
+            });
+        });
+
         webSocketConfig();
 
         //用来存储websocket发来的各个通道下D1到D16实时数据
@@ -116,6 +141,7 @@
                 chart: {
                     type: 'spline',
                     marginRight: 10,
+                    
                     events: {
                         load: function() {
                             var series = this.series;
@@ -189,6 +215,9 @@
                             Highcharts.numberFormat(this.y, 2);
                     }
                 },
+                credits: { 
+                    enabled: false   //右下角不显示highcharts的logo
+                },
                 series: series,
             });
 
@@ -223,15 +252,12 @@
         $("#southshackWestChart").show();
 
 
-
-
-
         //配置webSocket图表的图片，添加鼠标悬浮、离开事件
         function webSocketConfig() {
             $("#webSocket").css("background-image", "url(./desktop/images/socket_off.png)");
             //添加鼠标悬浮事件
             $("#webSocket").hover(function(evt) {
-                var xPos = (evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
+                var xPos = $(window).width()-220;//(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
                 var yPos = $(window).height() - 80;
 
                 $("#label").css({
