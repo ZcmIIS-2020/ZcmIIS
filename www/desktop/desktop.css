@@ -544,6 +544,9 @@ body {
     position: absolute;
     left: 0;
     top: 0;
+    background: url(images/background.jpg) no-repeat;
+    background-size:100% 100%; 
+    background-attachment: fixed;
 }
 
 .desktopbg {
@@ -563,7 +566,7 @@ body {
     bottom: 0px;
     overflow: hidden;
     z-index: 20;
-    background-color: #DDDEC9
+    background-color: rgba(0, 0, 0, 0.6)
 }
 
 .taskIcon {
@@ -579,7 +582,7 @@ body {
 }
 
 .taskIcon:hover {
-    background-color: #0044ff
+    background-color: rgba(130, 130, 140, 0.4);
 }
 
 .zCloud {
@@ -606,6 +609,19 @@ body {
     text-align: center;
     color: #fff;
 }
+.showTime:hover {
+    background-color: rgba(130, 130, 140, 0.4);
+}
+.settime{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    right: 0px;
+    z-index: 20;
+    bottom: 40px;
+    background-color: rgba(0, 0, 0, 0.6);
+    display:none;
+}
 
 .webSocket {
     position: absolute;
@@ -621,7 +637,7 @@ body {
 }
 
 .webSocket:hover {
-    background-color: #0044ff
+    background-color: rgba(130, 130, 140, 0.4);
 }
 
 

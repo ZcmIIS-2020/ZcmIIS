@@ -39,7 +39,7 @@
             height: 20px;
             color: red;
             text-align: center;
-            border: 1p;
+            border: 1px;
         }
     </style>
 </head>
@@ -69,8 +69,10 @@
             var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); //相机构建
             var renderer = new THREE.WebGLRenderer({
                 antialias: true, //开启反锯齿
+                alpha: true //背景透明
             }); //渲染器构建
-            renderer.setClearColor(0xEEEEEE);
+            renderer.setClearAlpha(0.2); //背景透明度
+            //renderer.setClearColor(0x00008B,0.3); //设置renderer背景颜色,默认为黑色
             renderer.setPixelRatio(window.devicePixelRatio); // 设置分辨率
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMapEnabled = true; //激活阴影
