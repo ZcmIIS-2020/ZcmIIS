@@ -16,7 +16,8 @@
     <script src="https://code.highcharts.com.cn/highcharts/themes/sand-signika.js"></script>
     <script src="http://cdn.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 
-
+    <script src="../js/default_dff.js"></script>
+    <script src="../js/default_yxr.js"></script>
     <style>
         #webGL {
             height: calc(100% - 40px);
@@ -32,7 +33,16 @@
             line-height: 1;
             border-radius: 5px;
             display: none;
+            text-align: center;
             pointer-events: none;
+        }
+        
+        #xml {
+            top: 130px;
+            right: 260px;
+            border: 3px solid black;
+            background-color: rgba(255, 255, 255, 0.3);
+            position: fixed;
         }
         
         .highChart {
@@ -55,34 +65,36 @@
         <div id="desktop" class="desktop">
             <div id="desktopContent" class="desktopContent clear">
                 <div id="settime" class="settime"></div>
-                <iframe id='webGL' src="webGL.html" style="float: left;"></iframe>
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400" style="margin:250 0 0 400;border: 1px solid black;">
-                    <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+                <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
+                <div id="xml" class="xml">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400">
+                        <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
                     
-                    <line id="line2" x1="350" y1="200" x2="650" y2="100" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+                        <line id="line2" x1="350" y1="200" x2="650" y2="100" style="stroke:rgb(32, 230, 14);stroke-width:5" />
 
-                    <circle id="cir1" cx="30" cy="350" r="10"  fill="grey" />
+                        <circle id="cir1" cx="30" cy="350" r="10"  fill="grey" />
                     
-                    <circle id="cir2" cx="350" cy="200" r="10"  fill="grey" />
+                        <circle id="cir2" cx="350" cy="200" r="10"  fill="grey" />
                     
-                    <circle id="cir3" cx="650" cy="100" r="10"  fill="grey" />
+                        <circle id="cir3" cx="650" cy="100" r="10"  fill="grey" />
 
                     
-                    <defs>
-                        <path id="path1" d="M30,340 L350,190" />
-                        <path id="path2" d="M350,190 L650,90" />
-                    </defs>
-                    <text id="text1" x="50" y="20" style="fill:red;fill-opacity:0">
-                        <textPath xlink:href="#path1">检测到障碍物！</textPath>
-                    </text>
-                    <text id="text2" x="50" y="20" style="fill:red;fill-opacity:0">
-                        <textPath xlink:href="#path2">检测到障碍物！</textPath>
-                    </text>
+                        <defs>
+                            <path id="path1" d="M30,340 L350,190" />
+                            <path id="path2" d="M350,190 L650,90" />
+                        </defs>
+                        <text id="text1" x="50" y="20" style="fill:red;fill-opacity:0">
+                            <textPath xlink:href="#path1">检测到障碍物！</textPath>
+                        </text>
+                        <text id="text2" x="50" y="20" style="fill:red;fill-opacity:0">
+                            <textPath xlink:href="#path2">检测到障碍物！</textPath>
+                        </text>
 
-                    <text x="10" y="380" fill="black">湖工大</text>
-                    <text x="330" y="230" fill="black">板桥</text>
-                    <text x="630" y="130" fill="black">野芷湖</text>
-                  </svg>
+                        <text x="10" y="380" fill="black">湖工大</text>
+                        <text x="330" y="230" fill="black">板桥</text>
+                        <text x="630" y="130" fill="black">野芷湖</text>
+                    </svg>
+                </div>
             </div>
         </div>
         <div class="task">
@@ -96,450 +108,6 @@
     </div>
 </body>
 <script>
-    $(document).ready(function() {
-        $("#showTime").click(function() {
-            $("#settime").slideToggle("fast");
-        });
-        $("#showTime").hover(function(evt) {
-            var xPos = $(window).width() - 165; //(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
-            var yPos = $(window).height() - 80;
-            var date = new Date();
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var da = date.getDate();
-            var day = date.getDay();
-            $("#label").css({
-                left: xPos,
-                top: yPos,
-                display: 'block'
-            });
-            $("#label").html(year + "年" + month + "月" + da + "日<br/>星期" + day);
-        });
-        $("#showTime").mouseleave(function(evt) {
-            $("#label").css({
-                display: 'none'
-            });
-        });
-
-
-        function barrierDetection() {
-            let sockets = ["192.168.8.35|192.168.8.131|1|1|2|1",
-                "192.168.8.35|192.168.8.131|1|-1|2|1",
-                "192.168.8.35|192.168.8.131|1|1|2|1",
-                "192.168.8.35|192.168.8.131|1|1|2|-1",
-                "192.168.8.35|192.168.8.131|1|1|2|1",
-                "192.168.8.35|192.168.8.131|1|-1|2|-1"
-            ];
-            let index = 0;
-            setInterval(function() {
-                let socketInfo = sockets[index];
-                let strs = socketInfo.split("|");
-                for (let i = 2; i < strs.length; i += 2) {
-                    let pathId = parseInt(strs[i]);
-                    let state = parseInt(strs[i + 1]);
-                    let colorStyle, opacity;
-                    if (state > 0) {
-                        colorStyle = 'rgb(32, 230, 14)';
-                        opacity = 0;
-                    } else {
-                        colorStyle = 'red';
-                        opacity = 0.7;
-                    }
-                    switch (pathId) {
-                        case 1:
-                            {
-                                $("#line1").css('stroke', colorStyle);
-                                $("#text1").css('fill-opacity', opacity);
-                                break;
-                            }
-                        case 2:
-                            {
-                                $("#line2").css('stroke', colorStyle);
-                                $("#text2").css('fill-opacity', opacity);
-                                break;
-                            }
-                    }
-
-                }
-                index++;
-                if (index == sockets.length)
-                    index = 0;
-            }, 1000);
-        }
-        barrierDetection();
-        webSocketConfig();
-
-        //用来存储websocket发来的各个通道下D1到D16实时数据
-        var socketData = [];
-        var lockReconnect = false; //避免websocket重复连接
-        //websocket连接
-        webSocketEvent();
-
-        //创建十三个界面图表，默认隐藏
-        var TableCols = ["name", "x", "y", "z", "monitorType", "eng_name"];
-        var URL = "/ZcmDB|monitor_site|select * from sites order by x DESC;|";
-        var data = window.selectDB(URL, TableCols);
-        //console.log(data);
-        for (let i in data) {
-            let name = data[i]["name"];
-            let eng_name = data[i]["eng_name"];
-            //动态创建highChart容器，显示在桌面上
-            var highChartDiv = $('<div></div>');
-            highChartDiv.attr({
-                "id": eng_name + 'Chart',
-                "class": 'highChart'
-            });
-
-            $('#desktopContent').append(highChartDiv);
-
-            //该截面所有的通道号
-            TableCols = ["ip", "channel"];
-            //使用distinct达不到效果；+0因为channel是字符串类型
-            URL = "/ZcmDB|sensor_info|select ip, min(channel) channel from sensors where monitor_name = '" + eng_name + "' group by channel order by channel + 0;|";
-            let channelData = window.selectDB(URL, TableCols);
-            //console.log(channelData);
-
-            //当前通道号和ip
-            let currChannel = channelData[0]["channel"];
-            let currIp = channelData[0]["ip"];
-
-            var series = prepareSeriesData(currChannel, currIp);
-
-
-            Highcharts.setOptions({
-                global: {
-                    useUTC: false
-                }
-            });
-            let chart = Highcharts.chart(eng_name + 'Chart', {
-                chart: {
-                    type: 'spline',
-                    marginRight: 10,
-
-                    events: {
-                        load: function() {
-                            var series = this.series;
-                            setInterval(function() {
-                                //console.log(socketData);
-                                for (let i in socketData) {
-                                    let t = parseInt(socketData[i]["name"].substring(1));
-                                    if (t == currChannel) {
-                                        let data = socketData[i]["data"];
-                                        for (let j = 0; j < series.length; j++) {
-                                            let y;
-                                            if (j < data.length)
-                                                y = data[j];
-                                            else
-                                                y = 0;
-                                            let x = new Date().getTime();
-                                            series[j].addPoint([x, y], true, true);
-                                        }
-                                    }
-                                }
-
-                            }, 1000);
-
-                        }
-                    }
-                },
-                exporting: {
-                    enabled: true,
-                    buttons: {
-                        contextButton: {
-                            y: 30
-                        },
-                        // symbol:['circle', 'diamond', 'square', 'triangle', 'triangle-down','menu'],
-                        minButton: {
-                            symbol: 'triangle-down',
-                            symbolStrokeWidth: 1,
-                            y: 30,
-                            onclick: function() {
-                                $("#" + eng_name + "Chart").hide();
-                            }
-                        },
-                    }
-                },
-                boost: {
-                    useGPUTranslations: true
-                },
-                title: {
-                    text: name + '-通道' + currChannel + '-实时数据'
-                },
-                subtitle: {
-                    useHTML: true,
-                    align: 'left',
-                    text: '通道编号:    <span id="' + eng_name + 'Radios"></span>'
-                },
-                xAxis: {
-                    type: 'datetime',
-                    tickInterval: 1000, //单位：毫秒   
-                    dateTimeLabelFormats: {
-                        day: '%H:%M:%S'
-                    },
-                },
-                yAxis: {
-                    title: {
-                        text: null
-                    }
-                },
-                tooltip: {
-                    formatter: function() {
-                        return '<b>' + this.series.name + '</b><br/>' +
-                            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                            Highcharts.numberFormat(this.y, 2);
-                    }
-                },
-                credits: {
-                    enabled: false //右下角不显示highcharts的logo
-                },
-                series: series,
-            });
-
-            //把该截面所有的通道显示在highchart上
-            for (let i in channelData) {
-                let channelNum = channelData[i]["channel"];
-                let radio = $("<input type='radio' id='" + i + "' name='" + eng_name + "Radio' value='" + channelNum + "'/><label for='" + eng_name + "Radio'>" + channelNum + "   </label>");
-                if (i == 0)
-                    radio = $("<input type='radio' id='" + i + "' name='" + eng_name + "Radio' value='" + channelNum + "' checked='true'/><label for='" + eng_name + "Radio'>" + channelNum + "    </label>");
-                $("#" + eng_name + "Radios").append(radio);
-            }
-
-            //为单选按钮添加change事件，当通道号发生改变，图表要相应改变
-            $('input[type=radio][name=' + eng_name + 'Radio]').change(function() {
-                let index = $("input[name='" + eng_name + "Radio']:checked").attr("id");
-                //更新当前通道值和ip
-                currChannel = channelData[index]["channel"];
-                currIp = channelData[index]["ip"];
-                //更新标题
-                chart.setTitle({
-                    text: name + '-通道' + currChannel + '-实时数据'
-                });
-                let series = prepareSeriesData(currChannel, currIp);
-                //console.log(series);
-                //更新线的值
-                chart.update({
-                    series: series
-                });
-            });
-        }
-        $(".highChart").hide();
-        //$("#southshackWestChart").show();
-
-
-        //配置webSocket图表的图片，添加鼠标悬浮、离开事件
-        function webSocketConfig() {
-            $("#webSocket").css("background-image", "url(./desktop/images/socket_off.png)");
-            //添加鼠标悬浮事件
-            $("#webSocket").hover(function(evt) {
-                var xPos = $(window).width() - 220; //(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
-                var yPos = $(window).height() - 80;
-
-                $("#label").css({
-                    left: xPos,
-                    top: yPos,
-                    display: 'block'
-                });
-                if ($(this).css("background-image").indexOf("off") != -1)
-                    $("#label").html("socket未连接");
-                else if ($(this).css("background-image").indexOf("error") != -1)
-                    $("#label").html("socket连接异常");
-                else
-                    $("#label").html("socket已连接");
-            });
-
-            //添加鼠标离开事件
-            $("#webSocket").mouseleave(function(evt) {
-                $("#label").css({
-                    display: 'none'
-                });
-            });
-        }
-
-        //连接webSocket，并且设置onopen、onmessage、onclose、onerror事件
-        function webSocketEvent() {
-            var url = "ws://192.168.8.35";
-            var ws = new WebSocket(url); //申请一个WebSocket对象，参数是服务端地址，同http协议使用http://开头一样，WebSocket协议的url使用ws://开头，另外安全的WebSocket协议使用wss://开头
-            ws.onopen = function() {　　 //当WebSocket创建成功时，触发onopen事件
-                console.log("socket connected");　　
-                $("#webSocket").css("background-image", "url(./desktop/images/socket_on.png)");
-            }
-            ws.onmessage = function(e) {　　 //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据　　
-                console.log(e.data);　
-                //处理数据，并存下来
-                var strs = e.data.split('|');
-                socketData = [];
-                for (let i = 2, t = 1, index = 0; i < strs.length;) {
-                    let Ddata = parseFloat(strs[i]); //
-                    if (Ddata > 0.0) { //说明该通道下有数据
-                        i++;
-                        let TNum = 'T' + t++;
-                        socketData.push({
-                            "name": TNum,
-                            "data": [],
-                        });
-                        while (Ddata > 0) {
-                            socketData[index]["data"].push(eval(strs[i]));
-                            i++;
-                            Ddata--;
-                        }
-                        index++;
-                    } else
-                        i++;
-                }
-                //console.log(socketData);
-            }
-            ws.onclose = function(e) {　　 //当客户端收到服务端发送的关闭连接请求时，触发onclose事件　　
-                console.log("socket close");
-                $("#webSocket").css("background-image", "url(./desktop/images/socket_off.png)");
-                reconnect();
-            }
-            ws.onerror = function(e) {　　 //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件　
-                console.log("socket error");
-                $("#webSocket").css("background-image", "url(./desktop/images/socket_error.png)");
-                reconnect();
-            }
-        }
-
-        //若websocket断开或出错，尝试重新连接
-        function reconnect() {
-            if (lockReconnect) return;
-            lockReconnect = true;
-            //没连接上会一直重连，设置延迟避免请求过多
-            setTimeout(function() {
-                webSocketEvent();
-                lockReconnect = false;
-            }, 2000);
-        }
-
-        function dateFormat(fmt, date) {
-            let ret;
-            const opt = {
-                "Y+": date.getFullYear().toString(), // 年
-                "m+": (date.getMonth() + 1).toString(), // 月
-                "d+": date.getDate().toString(), // 日
-                "H+": date.getHours().toString(), // 时
-                "M+": date.getMinutes().toString(), // 分
-                "S+": date.getSeconds().toString() // 秒
-                    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-            };
-            for (let k in opt) {
-                ret = new RegExp("(" + k + ")").exec(fmt);
-                if (ret) {
-                    fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-                };
-            };
-            return fmt;
-        }
-
-        //准备series的数据
-        function prepareSeriesData(currChannel, currIp) {
-            //去ip和channel下查所有传感器前10s的历史数据
-            TableCols = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11",
-                "D12", "D13", "D14", "D15", "D16"
-            ];
-            let lastDate = new Date();
-            let firstDate = new Date(lastDate.getTime() - 10 * 1000);
-            lastDate = dateFormat("YYYY-mm-dd HH:MM:SS", lastDate);
-            firstDate = dateFormat("YYYY-mm-dd HH:MM:SS", firstDate);
-            URL = "/ZcmDB|" + currIp + "|select * from T" + currChannel + " where  D0 BETWEEN " + firstDate + " AND " + lastDate + " order by D0;|";
-            let historyData = window.selectDB(URL, TableCols);
-            historyData = historyData.slice(-10);
-            //console.log(historyData);
-            //console.log(URL);
-
-            //将数据放入数组中，它为hightchart的初始数据
-            var series = [];
-            //初始化series数据
-            for (let i = 0; i < TableCols.length; i++) {
-                series.push({
-                    "name": TableCols[i],
-                    "data": [],
-                    "visible": false
-                });
-            }
-            //将数据填入series中
-            for (let i = 0, k = 0; i < 10; i++, k++) {
-                let currDate = new Date(firstDate).getTime() + i * 1000;
-                if (currDate == historyData[k]) {
-                    for (let j = 0; j < TableCols.length; j++) {
-                        series[j]["data"].push([currDate, parseFloat(historyData[j])]);
-                    }
-                } else {
-                    for (let j = 0; j < TableCols.length; j++) {
-                        series[j]["data"].push([currDate, 0.0]);
-                    }
-                }
-            }
-            //console.log(series);
-            //如果前10s的数据都为0，默认这条线不显示
-            for (let i in series) {
-                let arr = series[i]["data"];
-                let flag = false;
-                for (let j in arr)
-                    if (arr[j][1] != 0) {
-                        flag = true;
-                        break;
-                    }
-                series[i]["visible"] = flag;
-            }
-
-            return series;
-        }
-
-        //让highChartDiv可被鼠标拖拽
-        //console.log($(".chartTitle"));
-        // $(".chartTitle").each(function() {
-        //     var flag = false,
-        //         vHeight, vWidth, cHeight, cWdith;
-        //     $(this).click(function() {
-        //         alert('s')
-        //     });
-        //     target.mousedown(function(e) {
-        //         flag = true;
-        //         vHeight = e.pageY;
-        //         vWidth = e.pageX;
-        //         cHeight = vHeight - $(this).offset().top;
-        //         cWdith = vWidth - $(this).offset().left;
-        //         //alert("divshow" + $(this).offset().top + " divvHeight" + vHeight);
-        //         //alert("高" + cHeight + " 宽" + cWdith);
-        //     })
-
-        //     var showWidth = highChartDiv.width();
-        //     var showHeight = highChartDiv.height();
-        //     var documentWidth = $(document).width();
-        //     var documentHeight = $(document).height();
-
-        //     target.mousemove(function(e) {
-        //         if (flag) {
-        //             var divheight = e.pageY - cHeight; //窗口要移动到的位置
-        //             var divwidth = e.pageX - cWdith; //窗口要移动到的位置
-        //             //$("#la1").text(divheight + "w" + divwidth + "win" + showWidth + " x " + documentWidth + "" + showWidth);
-        //             if (divwidth < 0) {
-        //                 divwidth = 0;
-        //             }
-        //             if (divheight < 50) {
-        //                 divheight = 50;
-        //             }
-        //             if (divwidth > documentWidth - showWidth) {
-        //                 divwidth = documentWidth - showWidth - 5;
-        //             }
-        //             if (divheight > documentHeight - showHeight) {
-        //                 divheight = documentHeight - showHeight - 5;
-        //             }
-        //             highChartDiv.css({
-        //                 "left": divwidth,
-        //                 "top": divheight
-        //             });
-        //         }
-        //     });
-
-        //     target.mouseup(function() {
-        //         flag = false;
-        //     });
-        // });
-    });
-
-    //为了使子类能调用，写在外面
     function showChart(chartId) {
         $(".highChart").hide();
         $("#" + chartId + "Chart").show();
