@@ -1,42 +1,41 @@
 $(document).ready(function() {
+    $(document).click(function(e) {
+        console.log(e.pageX + ":" + e.pageY);
+    });
+
     function barrierDetection() {
-        let sockets = ["192.168.8.35|192.168.8.131|1|1|2|1",
-            "192.168.8.35|192.168.8.131|1|-1|2|1",
-            "192.168.8.35|192.168.8.131|1|1|2|1",
-            "192.168.8.35|192.168.8.131|1|1|2|-1",
-            "192.168.8.35|192.168.8.131|1|1|2|1",
-            "192.168.8.35|192.168.8.131|1|-1|2|-1"
+        let sockets = ["489:421|1194:463",
+            "",
+            "759:447|1006:454",
+            "",
+            "1190:463",
+            ""
         ];
         let index = 0;
         setInterval(function() {
             let socketInfo = sockets[index];
-            let strs = socketInfo.split("|");
-            for (let i = 2; i < strs.length; i += 2) {
-                let pathId = parseInt(strs[i]);
-                let state = parseInt(strs[i + 1]);
-                let colorStyle, opacity;
-                if (state > 0) {
-                    colorStyle = 'rgb(32, 230, 14)';
-                    opacity = 0;
-                } else {
-                    colorStyle = 'red';
-                    opacity = 0.7;
+            if (socketInfo === "") {
+                $(".bubble").fadeOut(500);
+            } else {
+                let strs = socketInfo.split("|");
+                for (let i = 0; i < strs.length; i++) {
+                    let colon_index = strs[i].indexOf(":");
+                    let left = parseInt(strs[i].substring(0, colon_index));
+                    let top = parseInt(strs[i].substring(colon_index + 1));
+                    let bubble = $("<div>检测到障碍!</div>");
+                    bubble.attr({
+                        class: "bubble",
+                    });
+                    bubble.css({
+                        top: top - 85,
+                        left: left - 50,
+                        color: 'red',
+                        textAlign: 'center',
+                        display: 'none',
+                    });
+                    bubble.fadeIn(500);
+                    $("body").append(bubble);
                 }
-                switch (pathId) {
-                    case 1:
-                        {
-                            $("#line1").css('stroke', colorStyle);
-                            $("#text1").css('fill-opacity', opacity);
-                            break;
-                        }
-                    case 2:
-                        {
-                            $("#line2").css('stroke', colorStyle);
-                            $("#text2").css('fill-opacity', opacity);
-                            break;
-                        }
-                }
-
             }
             index++;
             if (index == sockets.length)
