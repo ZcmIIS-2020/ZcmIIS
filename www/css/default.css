@@ -1,0 +1,37 @@
+#webGL {
+    height: calc(100% - 40px);
+    width: 100%;
+    border: 0;
+}
+
+#label {
+    position: absolute;
+    padding: 10px;
+    z-index: 999999;
+    background: #ffffff;
+    line-height: 1;
+    border-radius: 5px;
+    display: none;
+    text-align: center;
+    pointer-events: none;
+}
+
+#xml {
+    top: 130px;
+    right: 260px;
+    border: 3px solid black;
+    background-color: rgba(255, 255, 255, 0.3);
+    position: fixed;
+}
+
+.highChart {
+    /*透明度 */
+    opacity: 0.5;
+    /*设置透明度 子元素不继承透明度*/
+    margin: 0px;
+    right: 0px;
+    top: 0px;
+    z-index: 100;
+    position: fixed;
+    height: 500px;
+}

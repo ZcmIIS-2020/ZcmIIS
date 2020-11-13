@@ -6,6 +6,8 @@
     <title>zCloud云桌面</title>
     <link rel="Shortcut Icon" href="desktop/images/zCloud.png" type="image/x-icon" />
     <link rel="stylesheet" href="desktop/desktop.css" type="text/css" />
+    <link rel="stylesheet" href="./css/default.css" type="text/css" />
+
     <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="desktop/desktop.js"></script>
     <script type="text/javascript" src="../js/DBase.js"></script>
@@ -18,45 +20,7 @@
 
     <script src="../js/default_dff.js"></script>
     <script src="../js/default_yxr.js"></script>
-    <style>
-        #webGL {
-            height: calc(100% - 40px);
-            width: 100%;
-            border: 0;
-        }
-        
-        #label {
-            position: absolute;
-            padding: 10px;
-            z-index: 999999;
-            background: #ffffff;
-            line-height: 1;
-            border-radius: 5px;
-            display: none;
-            text-align: center;
-            pointer-events: none;
-        }
-        
-        #xml {
-            top: 130px;
-            right: 260px;
-            border: 3px solid black;
-            background-color: rgba(255, 255, 255, 0.3);
-            position: fixed;
-        }
-        
-        .highChart {
-            /*透明度 */
-            opacity: 0.5;
-            /*设置透明度 子元素不继承透明度*/
-            margin: 0px;
-            right: 0px;
-            top: 0px;
-            z-index: 100;
-            position: fixed;
-            height: 500px;
-        }
-    </style>
+
 </head>
 
 <body>
@@ -66,46 +30,16 @@
             <div id="desktopContent" class="desktopContent clear">
                 <div id="settime" class="settime"></div>
                 <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
-                <div id="xml" class="xml">
-                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400">
-                        <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
-                    
-                        <line id="line2" x1="350" y1="200" x2="650" y2="100" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+                <img src="./desktop/images/metro.png" style="margin: 150 0 0 300;" />
+                <div class="task">
+                    <div id="taskIcon">
 
-                        <circle id="cir1" cx="30" cy="350" r="10"  fill="grey" />
-                    
-                        <circle id="cir2" cx="350" cy="200" r="10"  fill="grey" />
-                    
-                        <circle id="cir3" cx="650" cy="100" r="10"  fill="grey" />
-
-                    
-                        <defs>
-                            <path id="path1" d="M30,340 L350,190" />
-                            <path id="path2" d="M350,190 L650,90" />
-                        </defs>
-                        <text id="text1" x="50" y="20" style="fill:red;fill-opacity:0">
-                            <textPath xlink:href="#path1">检测到障碍物！</textPath>
-                        </text>
-                        <text id="text2" x="50" y="20" style="fill:red;fill-opacity:0">
-                            <textPath xlink:href="#path2">检测到障碍物！</textPath>
-                        </text>
-
-                        <text x="10" y="380" fill="black">湖工大</text>
-                        <text x="330" y="230" fill="black">板桥</text>
-                        <text x="630" y="130" fill="black">野芷湖</text>
-                    </svg>
+                    </div>
+                    <div id="webSocket" class="webSocket"></div>
+                    <div id="showTime" class="showTime"></div>
+                    <div id="zCloud" class="zCloud"></div>
                 </div>
             </div>
-        </div>
-        <div class="task">
-            <div id="taskIcon">
-
-            </div>
-            <div id="webSocket" class="webSocket"></div>
-            <div id="showTime" class="showTime"></div>
-            <div id="zCloud" class="zCloud"></div>
-        </div>
-    </div>
 </body>
 <script>
     function showChart(chartId) {
