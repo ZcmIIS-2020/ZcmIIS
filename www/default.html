@@ -40,8 +40,9 @@
             /*设置透明度 子元素不继承透明度*/
             margin: 0px;
             right: 0px;
+            top: 0px;
             z-index: 100;
-            position: absolute;
+            position: fixed;
             height: 500px;
         }
     </style>
@@ -53,7 +54,6 @@
         <div id="desktop" class="desktop">
             <div id="desktopContent" class="desktopContent clear">
 
-=======
                 <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400" style="margin:250 0 0 400;border: 1px solid black;">
                     <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
@@ -82,7 +82,6 @@
                     <text x="330" y="230" fill="black">板桥</text>
                     <text x="630" y="130" fill="black">野芷湖</text>
                   </svg>
->>>>>>> 21cfa06150f752e48b278029d947d9398dc2d4ae
             </div>
         </div>
         <div class="task">
@@ -194,7 +193,7 @@
                 chart: {
                     type: 'spline',
                     marginRight: 10,
-                    
+
                     events: {
                         load: function() {
                             var series = this.series;
@@ -268,8 +267,8 @@
                             Highcharts.numberFormat(this.y, 2);
                     }
                 },
-                credits: { 
-                    enabled: false   //右下角不显示highcharts的logo
+                credits: {
+                    enabled: false //右下角不显示highcharts的logo
                 },
                 series: series,
             });
@@ -310,7 +309,7 @@
             $("#webSocket").css("background-image", "url(./desktop/images/socket_off.png)");
             //添加鼠标悬浮事件
             $("#webSocket").hover(function(evt) {
-                var xPos = $(window).width()-220;//(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
+                var xPos = $(window).width() - 220; //(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
                 var yPos = $(window).height() - 80;
 
                 $("#label").css({
