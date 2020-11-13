@@ -545,7 +545,7 @@ body {
     left: 0;
     top: 0;
     background: url(images/background.jpg) no-repeat;
-    background-size:100% 100%; 
+    background-size: 100% 100%;
     background-attachment: fixed;
 }
 
@@ -609,10 +609,12 @@ body {
     text-align: center;
     color: #fff;
 }
+
 .showTime:hover {
     background-color: rgba(130, 130, 140, 0.4);
 }
-.settime{
+
+.settime {
     position: absolute;
     width: 200px;
     height: 200px;
@@ -620,7 +622,7 @@ body {
     z-index: 20;
     bottom: 40px;
     background-color: rgba(0, 0, 0, 0.6);
-    display:none;
+    display: none;
 }
 
 .webSocket {
