@@ -31,9 +31,16 @@
             line-height: 1;
             border-radius: 5px;
             display: none;
+            text-align: center;
             pointer-events: none;
         }
-        
+        #xml{
+            top: 130px;
+            right: 260px;
+            border: 3px solid black;
+            background-color: rgba(255,255,255,0.3);
+            position: fixed;
+        }
         .highChart {
             /*透明度 */
             opacity: 0.5;
@@ -53,40 +60,37 @@
     <div id="desktopwrap" class="wrap clear">
         <div id="desktop" class="desktop">
             <div id="desktopContent" class="desktopContent clear">
-<<<<<<< HEAD
-                <div id="settime" class="settime"></div>
-=======
-
->>>>>>> 19f82f1e07c16255391a187eaf5a2d2584d12f7a
                 <div id="settime" class="settime"></div>
                 <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400" style="margin:250 0 0 400;border: 1px solid black;">
-                    <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+                <div id="xml" class="xml">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="700" height="400">
+                        <line id="line1" x1="30" y1="350" x2="350" y2="200" style="stroke:rgb(32, 230, 14);stroke-width:5" />
                     
-                    <line id="line2" x1="350" y1="200" x2="650" y2="100" style="stroke:rgb(32, 230, 14);stroke-width:5" />
+                        <line id="line2" x1="350" y1="200" x2="650" y2="100" style="stroke:rgb(32, 230, 14);stroke-width:5" />
 
-                    <circle id="cir1" cx="30" cy="350" r="10"  fill="grey" />
+                        <circle id="cir1" cx="30" cy="350" r="10"  fill="grey" />
                     
-                    <circle id="cir2" cx="350" cy="200" r="10"  fill="grey" />
+                        <circle id="cir2" cx="350" cy="200" r="10"  fill="grey" />
                     
-                    <circle id="cir3" cx="650" cy="100" r="10"  fill="grey" />
+                        <circle id="cir3" cx="650" cy="100" r="10"  fill="grey" />
 
                     
-                    <defs>
-                        <path id="path1" d="M30,340 L350,190" />
-                        <path id="path2" d="M350,190 L650,90" />
-                    </defs>
-                    <text id="text1" x="50" y="20" style="fill:red;fill-opacity:0">
-                        <textPath xlink:href="#path1">检测到障碍物！</textPath>
-                    </text>
-                    <text id="text2" x="50" y="20" style="fill:red;fill-opacity:0">
-                        <textPath xlink:href="#path2">检测到障碍物！</textPath>
-                    </text>
+                        <defs>
+                            <path id="path1" d="M30,340 L350,190" />
+                            <path id="path2" d="M350,190 L650,90" />
+                        </defs>
+                        <text id="text1" x="50" y="20" style="fill:red;fill-opacity:0">
+                            <textPath xlink:href="#path1">检测到障碍物！</textPath>
+                        </text>
+                        <text id="text2" x="50" y="20" style="fill:red;fill-opacity:0">
+                            <textPath xlink:href="#path2">检测到障碍物！</textPath>
+                        </text>
 
-                    <text x="10" y="380" fill="black">湖工大</text>
-                    <text x="330" y="230" fill="black">板桥</text>
-                    <text x="630" y="130" fill="black">野芷湖</text>
-                  </svg>
+                        <text x="10" y="380" fill="black">湖工大</text>
+                        <text x="330" y="230" fill="black">板桥</text>
+                        <text x="630" y="130" fill="black">野芷湖</text>
+                    </svg>
+                </div>
             </div>
         </div>
         <div class="task">
@@ -115,9 +119,9 @@
             $("#label").css({
                 left: xPos,
                 top: yPos,
-                display: 'block'
+                display: 'block',
             });
-            $("#label").html(year+"年"+month+"月"+da+"日<br/>星期"+day);
+            $("#label").html(year+"年"+month+"月"+da+"日<br/>星期"+ "日一二三四五六".charAt(day));
         });
         $("#showTime").mouseleave(function(evt) {
             $("#label").css({
