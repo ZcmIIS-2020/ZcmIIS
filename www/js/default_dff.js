@@ -1,48 +1,4 @@
 $(document).ready(function() {
-    $(document).click(function(e) {
-        console.log(e.pageX + ":" + e.pageY);
-    });
-
-    function barrierDetection() {
-        let sockets = ["489:421|1194:463",
-            "",
-            "759:447|1006:454",
-            "",
-            "1190:463",
-            ""
-        ];
-        let index = 0;
-        setInterval(function() {
-            let socketInfo = sockets[index];
-            if (socketInfo === "") {
-                $(".bubble").fadeOut(500);
-            } else {
-                let strs = socketInfo.split("|");
-                for (let i = 0; i < strs.length; i++) {
-                    let colon_index = strs[i].indexOf(":");
-                    let left = parseInt(strs[i].substring(0, colon_index));
-                    let top = parseInt(strs[i].substring(colon_index + 1));
-                    let bubble = $("<div>检测到障碍!</div>");
-                    bubble.attr({
-                        class: "bubble",
-                    });
-                    bubble.css({
-                        top: top - 85,
-                        left: left - 50,
-                        color: 'red',
-                        textAlign: 'center',
-                        display: 'none',
-                    });
-                    bubble.fadeIn(500);
-                    $("body").append(bubble);
-                }
-            }
-            index++;
-            if (index == sockets.length)
-                index = 0;
-        }, 1000);
-    }
-    barrierDetection();
     webSocketConfig();
 
     //用来存储websocket发来的各个通道下D1到D16实时数据
@@ -65,7 +21,9 @@ $(document).ready(function() {
             "id": eng_name + 'Chart',
             "class": 'highChart'
         });
-
+        highChartDiv.css({
+            "display": 'none',
+        });
         $('#desktopContent').append(highChartDiv);
 
         //该截面所有的通道号
@@ -198,7 +156,6 @@ $(document).ready(function() {
             });
         });
     }
-    $(".highChart").hide();
     //$("#southshackWestChart").show();
 
 

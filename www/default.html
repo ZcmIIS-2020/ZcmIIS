@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" ;/>
     <title>zCloud云桌面</title>
     <link rel="Shortcut Icon" href="desktop/images/zCloud.png" type="image/x-icon" />
     <link rel="stylesheet" href="desktop/desktop.css" type="text/css" />
@@ -30,7 +30,8 @@
             <div id="desktopContent" class="desktopContent clear">
                 <div id="settime" class="settime"></div>
                 <!-- <iframe id='webGL' src="webGL.html" style="float: left;"></iframe> -->
-                <img src="./desktop/images/metro.png" style="margin: 150 0 0 300;" />
+                <iframe id="metro" src="metro.html" frameborder='no' scrolling="no" allowtransparency="yes"></iframe>></iframe>
+                <div class="svg"></div>
                 <div class="task">
                     <div id="taskIcon">
 
@@ -40,6 +41,8 @@
                     <div id="zCloud" class="zCloud"></div>
                 </div>
             </div>
+        </div>
+    </div>
 </body>
 <script>
     function showChart(chartId) {

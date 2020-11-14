@@ -4,6 +4,12 @@
     border: 0;
 }
 
+#metro {
+    height: calc(100% - 40px);
+    width: 1000px;
+    margin-left: 300px;
+}
+
 #label {
     position: absolute;
     padding: 10px;
