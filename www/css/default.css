@@ -6,8 +6,10 @@
 
 #metro {
     height: calc(100% - 40px);
-    width: 1000px;
-    margin-left: 300px;
+    width: 873.33331;
+    margin-left: 250px;
+    border: 2px solid rgba(15, 76, 129, 0.9);
+    background-color: rgba(217, 229, 248, 0.3);
 }
 
 #label {

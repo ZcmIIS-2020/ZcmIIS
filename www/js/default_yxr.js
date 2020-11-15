@@ -7,7 +7,7 @@ $(document).ready(function() {
     });
     $("#showTime").hover(function(evt) {
         var xPos = $(window).width() - 165; //(evt.pageX || evt.clientX || evt.offsetX || evt.x) - 50;
-        var yPos = $(window).height() - 80;
+        var yPos = $(window).height() - 95;
         var date = new Date();
         var year = date.getFullYear();
         var month = date.getMonth() + 1;
