@@ -3,12 +3,19 @@
     width: 100%;
     border: 0;
 }
-
+#map_title{
+    height: 25px;
+    width: 877;
+    margin-left: 230px;
+    background-color: rgba(15, 76, 129, 0.8);
+    text-align:center ;
+    color: white;
+}
 #metro {
-    height: calc(100% - 40px);
-    width: 873.33331;
-    margin-left: 250px;
-    border: 2px solid rgba(15, 76, 129, 0.9);
+    height: calc(100% - 69px);
+    width: 873;
+    margin-left: 230px;
+    border: 2px solid rgba(15, 76, 129, 0.8);
     background-color: rgba(217, 229, 248, 0.3);
 }
 
