@@ -422,7 +422,7 @@ desk.prototype = {
         var _this = this; //初始化
 
         this.createDesk();
-        this.createApp();
+        //this.createApp();
         this.createTime();
         this.setSize();
         this.arrangeIcon(this.argMent);
@@ -453,7 +453,7 @@ desk.prototype = {
         }
         this.oDeskContent.appendChild(oFrag);
     },
-    createApp: function() { //生成桌面图标
+/*    createApp: function() { //生成桌面图标
         for (var i = 0; i < this.aDeskIconContent.length; i++) {
             for (var j = 0; j < this.aDeskIconContent[i].length; j++) {
                 var newIcon = new createIcon(this.oDesk, this.aDesk[i], this.oTask, this.aDeskIconContent[i][j]);
@@ -464,6 +464,7 @@ desk.prototype = {
             this.aDeskIcon[i].index = i;
         }
     },
+*/
     createTime: function() { //生成任务栏时间
         var timer = document.getElementById("showTime");
         setInterval(function() {
