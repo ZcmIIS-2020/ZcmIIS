@@ -31,29 +31,27 @@
 }
 
 #right_box {
-    height: 90%;
-    width: 20%;
-    right: 10px;
-    top: 30px;
-    float: left;
-    z-index: 90;
+    height: 100%;
+    width: 100%;
+    float: right;
     position: absolute;
     background-color: rgba(48, 63, 148, 0.302);
     border: 2px solid rgb(82, 108, 254);
     border-radius: 1%;
+    transform-style: preserve-3d;
+    transform: rotateY(-7deg);
 }
 
 #left_box {
-    height: 90%;
-    width: 20%;
-    left: 10px;
-    top: 30px;
+    height: 100%;
+    width: 100%;
     float: left;
-    z-index: 90;
     position: absolute;
     background-color: rgba(48, 63, 148, 0.302);
     border: 2px solid rgb(82, 108, 254);
     border-radius: 1%;
+    transform-style: preserve-3d;
+    transform: rotateY(7deg);
 }
 
 .box_content {
