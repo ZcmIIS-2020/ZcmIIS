@@ -13,6 +13,7 @@
 #metro {
     height: calc(100% - 69px);
     width: 100%;
+    z-index: 0;
 }
 
 #label {
@@ -27,12 +28,17 @@
     pointer-events: none;
 }
 
-#xml {
-    top: 130px;
-    right: 260px;
-    border: 3px solid black;
-    background-color: rgba(255, 255, 255, 0.3);
-    position: fixed;
+#right_box{
+    height: 300px;
+    width: 400px;
+    right: 10px;
+    top:30px;
+    float: left;
+    z-index: 90;
+    position: absolute;
+    background-color: rgba(48, 63, 148, 0.302);
+    border: 2px solid rgb(82, 108, 254);
+    border-radius: 1%;
 }
 
 .highChart {
