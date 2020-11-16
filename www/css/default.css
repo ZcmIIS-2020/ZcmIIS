@@ -31,8 +31,8 @@
 }
 
 #right_box {
-    height: 60%;
-    width: 25%;
+    height: 90%;
+    width: 20%;
     right: 10px;
     top: 30px;
     float: left;
@@ -44,8 +44,8 @@
 }
 
 #left_box {
-    height: 60%;
-    width: 25%;
+    height: 90%;
+    width: 20%;
     left: 10px;
     top: 30px;
     float: left;
@@ -71,26 +71,4 @@
     z-index: 100;
     position: fixed;
     height: 500px;
-}
-
-.bubble {
-    width: 100px;
-    height: 25px;
-    border: 2px solid #ecec27;
-    border-radius: 7px;
-    /*圆角弧度为7px*/
-    position: absolute;
-    z-index: 100;
-}
-
-.bubble::before {
-    content: '';
-    width: 0;
-    height: 0;
-    border-width: 30 1;
-    border-style: solid;
-    position: absolute;
-    top: 25px;
-    left: 50px;
-    border-color: #ecec27;
 }
