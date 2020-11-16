@@ -581,7 +581,18 @@ body {
     margin-left: 10px;
     text-align: center;
     color: #fff;
-    background: url(images/zCloud.png) no-repeat center;
+}
+
+.attack_insp {
+    background: url(images/attack_insp.png) no-repeat center;
+}
+
+.rail_insp {
+    background: url(images/rail_insp.png) no-repeat center;
+}
+
+.tunnel_insp {
+    background: url(images/tunnel_insp.png) no-repeat center;
 }
 
 .taskIcon:hover {
