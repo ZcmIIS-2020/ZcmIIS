@@ -570,12 +570,15 @@ body {
 }
 
 .taskIcon {
-    position: absolute;
+    position: relative;
+    float: left;
+    left: 30px;
     width: 40px;
     height: 40px;
     overflow: hidden;
     z-index: 20;
     margin-bottom: 0px;
+    margin-left: 10px;
     text-align: center;
     color: #fff;
     background: url(images/zCloud.png) no-repeat center;
