@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $("#showTime").click(function() {
-        $("#settime").slideToggle("fast");
+       // $("#settime").slideToggle("fast");
         $("#label").css({
             display: 'none'
         });
