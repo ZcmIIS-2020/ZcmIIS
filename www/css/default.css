@@ -5,18 +5,14 @@
 }
 #map_title{
     height: 25px;
-    width: 877;
-    margin-left: 230px;
-    background-color: rgba(25, 181, 254, 0.8);
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
     text-align:center ;
     color: white;
 }
 #metro {
     height: calc(100% - 69px);
-    width: 873;
-    margin-left: 230px;
-    border: 2px solid rgba(25, 181, 254, 0.8);
-    background-color: hsla(201, 98%, 41%, 0.302);
+    width: 100%;
 }
 
 #label {
