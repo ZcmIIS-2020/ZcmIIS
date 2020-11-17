@@ -673,7 +673,48 @@
         tail.hide();
 
         body.click(function() {
-            alert('sss');
+            var bottom_text = $("#bottom_text", parent.document);
+            var x_y = body.css("transform");
+            //console.log(x_y);matrix(1, 0, 0, 1, 600, 1100)
+            var strs = ["", "", "", "", "", "", "", ""]
+            bottom_text.empty();
+            if (x_y === "matrix(1, 0, 0, 1, 600, 1100)") {
+                var span = $("<span>报警区间：湖工大-板桥</span><br>");
+                var span1 = $("<span>报警经度：114°41′</span><br>");
+                var span2 = $("<span>报警纬度：30°58′</span><br>");
+                var span3 = $("<span>报警坐标x：600</span><br>");
+                var span4 = $("<span>报警坐标y：1100</span><br>");
+                var span5 = $("<span>报警级别：3级</span><br>");
+                var span6 = $("<span>报警原因：施工</span><br>");
+                var span7 = $("<span>其他：</span><br>");
+                bottom_text.append(span);
+                bottom_text.append(span1);
+                bottom_text.append(span2);
+                bottom_text.append(span3);
+                bottom_text.append(span4);
+                bottom_text.append(span5);
+                bottom_text.append(span6);
+                bottom_text.append(span7);
+
+            } else if (x_y === "matrix(1, 0, 0, 1, 600, 1206)") {
+                var span = $("<span>报警区间：湖工大-板桥</span><br>");
+                var span1 = $("<span>报警经度：114°42′</span><br>");
+                var span2 = $("<span>报警纬度：30°59′</span><br>");
+                var span3 = $("<span>报警坐标x：600</span><br>");
+                var span4 = $("<span>报警坐标y：1206</span><br>");
+                var span5 = $("<span>报警级别：2级</span><br>");
+                var span6 = $("<span>报警原因：路面障碍</span><br>");
+                var span7 = $("<span>其他：</span><br>");
+                bottom_text.append(span);
+                bottom_text.append(span1);
+                bottom_text.append(span2);
+                bottom_text.append(span3);
+                bottom_text.append(span4);
+                bottom_text.append(span5);
+                bottom_text.append(span6);
+                bottom_text.append(span7);
+            }
+
         });
 
         function barrierDetection() {
