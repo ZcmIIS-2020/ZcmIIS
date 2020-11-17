@@ -70,6 +70,13 @@
     border-radius: 3%;
 }
 
+.myspan{
+    color: white;
+    position: relative;
+    left: 6%;
+    top: 5%;
+}
+
 .highChart {
     /*透明度 */
     opacity: 0.5;
