@@ -54,6 +54,17 @@
     transform: rotateY(7deg);
 }
 
+#bottom_text {
+    height: 20%;
+    width: 30%;
+    left: 35%;
+    bottom: 40px;
+    position: absolute;
+    background-color: rgba(48, 63, 148, 0.302);
+    border: 2px solid rgb(82, 108, 254);
+    border-radius: 1%;
+}
+
 .box_content {
     padding: 2px 5px;
     border-radius: 3%;
