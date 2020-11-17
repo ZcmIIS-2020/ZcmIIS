@@ -650,7 +650,7 @@
                               fill="#ffff99" font-weight="400" align="middle" anchor="middle" family="微软雅黑" size="16px" weight="400"
                               font-style="" opacity="1" y="22.6" transform="rotate(0)">
                             <tspan id="SvgjsTspan1618" dy="20" x="50">
-                                <tspan id="SvgjsTspan1619">检测到故障</tspan>
+                                <tspan id="SvgjsTspan1619">检测到入侵</tspan>
                             </tspan>
                         </text>
                     </g>
@@ -678,6 +678,7 @@
             //console.log(x_y);matrix(1, 0, 0, 1, 600, 1100)
             var strs = ["", "", "", "", "", "", "", ""]
             bottom_text.empty();
+            bottom_text.show();
             if (x_y === "matrix(1, 0, 0, 1, 600, 1100)") {
                 var span = $("<span class='myspan' class='myspan'>报警区间：湖工大-板桥</span><br>");
                 var span1 = $("<span class='myspan' class='myspan'>报警经度：114°41′</span><br>");
@@ -714,7 +715,7 @@
                 bottom_text.append(span6);
                 bottom_text.append(span7);
             }
-
+            //bottom_text.css("height": )
         });
 
         function barrierDetection() {
@@ -733,7 +734,6 @@
                     let colon_index = socketInfo.indexOf(":");
                     let x = parseFloat(socketInfo.substring(0, colon_index));
                     let y = parseFloat(socketInfo.substring(colon_index + 1));
-                    let bubble = $("<div>检测到故障!</div>");
                     body.attr({
                         "transform": "translate(" + (x - 300) + "," + y + ")"
                     });
