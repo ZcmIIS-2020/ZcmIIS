@@ -41,6 +41,17 @@ $(document).ready(function() {
 
 
         Highcharts.setOptions({
+            lang: {
+                viewFullscreen: "全屏",
+                printChart: '打印图表',
+                downloadJPEG: '下载JPEG文件',
+                downloadPDF: '下载PDF文件',
+                downloadPNG: '下载PNG文件',
+                downloadSVG: '下载SVG文件',
+                downloadCSV: '下载CSV文件',
+                downloadXLS: '下载XLS文件',
+                viewData: '查看数据表格'
+            },
             global: {
                 useUTC: false
             }
@@ -80,7 +91,17 @@ $(document).ready(function() {
                 enabled: true,
                 buttons: {
                     contextButton: {
-                        y: 30
+                        y: 30,
+                        menuItems: [
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[0],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[1],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[3],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[4],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[5],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[6],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[8],
+                            Highcharts.getOptions().exporting.buttons.contextButton.menuItems[9],
+                        ]
                     },
                     // symbol:['circle', 'diamond', 'square', 'triangle', 'triangle-down','menu'],
                     minButton: {

@@ -54,6 +54,26 @@
     transform: rotateY(7deg);
 }
 
+#left_wrap {
+    perspective: 300px;
+    height: 80%;
+    width: 20%;
+    left: 20px;
+    top: 70px;
+    z-index: 90;
+    position: absolute;
+}
+
+#right_wrap {
+    perspective: 300px;
+    height: 80%;
+    width: 20%;
+    right: 20px;
+    top: 70px;
+    z-index: 90;
+    position: absolute;
+}
+
 #bottom_text {
     width: 30%;
     left: 35%;

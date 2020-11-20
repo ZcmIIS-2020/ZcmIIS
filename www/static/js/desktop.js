@@ -348,11 +348,10 @@ var zh_windowCount = 0,
     /*----------------------------*****************----------------------------*/
     zh_deskIcon = [
         [
-            { id: 'monitor', src: 'desktop/images/monitor.png', title: '实时监测', webSrc: 'monitor.html' },
-            { id: 'analysis', src: 'desktop/images/analysis.png', title: '数据查询', webSrc: 'querydata.html' },
-            { id: 'query', src: 'desktop/images/query.png', title: '报警查询', webSrc: 'query.html' },
-            { id: 'maintain', src: 'desktop/images/maintain.png', title: '传感器配置', webSrc: 'maintain.html' },
-            { id: 'setdatetime', src: 'desktop/images/time.png', title: '系统校时', webSrc: 'setdatetime.html' }
+            { id: 'analysis', src: './static/images/analysis.png', title: '数据查询', webSrc: 'querydata.html' },
+            { id: 'query', src: './static/images/query.png', title: '报警查询', webSrc: 'query.html' },
+            { id: 'maintain', src: './static/images/maintain.png', title: '传感器配置', webSrc: 'maintain.html' },
+            { id: 'setdatetime', src: './static/images/time.png', title: '系统校时', webSrc: 'setdatetime.html' }
         ],
     ];
 
