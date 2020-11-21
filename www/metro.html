@@ -12,14 +12,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            cursor: move;
         }
     </style>
 </head>
 
 <body>
     <div id="svgContainer">
-        <svg id="svg" width="1500" height="2115.75" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">
+        <svg id="svg" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">
         <defs id="SvgjsDefs1007"></defs>
         <g id="SvgjsG1008">
             <path id="SvgjsPath1009" d="M751.0000000000002 1976.75L751 2068.75" stroke="#ff6666" stroke-width="10" fill="none"></path>
@@ -750,19 +749,21 @@
         }
         barrierDetection();
 
-
-        const svgImage = document.getElementById("svg");
         const svgContainer = document.getElementById("svgContainer");
+        const svg = document.getElementById("svg");
+
         var viewBox = {
-            x: 102.29459206360119,
-            y: 584.1342183459782,
-            w: 1303.860549131495,
-            h: 2770.7036669044264
+            x: 0,
+            y: 0,
+            w: svgContainer.clientWidth,
+            h: svgContainer.clientHeight
         };
-        svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+        //`${}`方式可以方便字符串拼接
+        svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+        //记录初始的高和宽度
         const svgSize = {
-            w: svgImage.clientWidth,
-            h: svgImage.clientHeight
+            w: svgContainer.clientWidth,
+            h: svgContainer.clientHeight
         };
         var isPanning = false;
         var startPoint = {
@@ -772,7 +773,8 @@
         var endPoint = {
             x: 0,
             y: 0
-        };;
+        };
+        //当前svg的大小：原始svg的大小
         var scale = 1;
 
         svgContainer.onmousewheel = function(e) {
@@ -781,22 +783,26 @@
             var h = viewBox.h;
             var mx = e.offsetX; //mouse x  
             var my = e.offsetY;
-            var dw = w * -Math.sign(e.deltaY) * 0.03;
-            var dh = h * -Math.sign(e.deltaY) * 0.03;
-            var dx = dw * mx / svgSize.w;
+            var dw = w * Math.sign(e.deltaY) * 0.04; //以svg为基准，应该移动的距离
+            var dh = h * Math.sign(e.deltaY) * 0.04;
+            var dx = dw * mx / svgSize.w; //以svgContainer为基准，应该移动的距离
             var dy = dh * my / svgSize.h;
-            viewBox = {
-                x: viewBox.x + dx,
-                y: viewBox.y + dy,
-                w: viewBox.w - dw,
-                h: viewBox.h - dh
-            };
+            if (viewBox.w + dw < svgSize.w * 2 && viewBox.w + dw > svgSize.w * 0.5) {
+                viewBox = {
+                    x: viewBox.x - dx,
+                    y: viewBox.y - dy,
+                    w: viewBox.w + dw,
+                    h: viewBox.h + dh
+                };
+            }
             scale = svgSize.w / viewBox.w;
-            svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+            svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+
         }
 
 
         svgContainer.onmousedown = function(e) {
+            $(this).css("cursor", "default");
             isPanning = true;
             startPoint = {
                 x: e.x,
@@ -806,6 +812,7 @@
 
         svgContainer.onmousemove = function(e) {
             if (isPanning) {
+                $(this).css("cursor", "move");
                 endPoint = {
                     x: e.x,
                     y: e.y
@@ -818,12 +825,13 @@
                     w: viewBox.w,
                     h: viewBox.h
                 };
-                svgImage.setAttribute('viewBox', `${movedViewBox.x} ${movedViewBox.y} ${movedViewBox.w} ${movedViewBox.h}`);
+                svg.setAttribute('viewBox', `${movedViewBox.x} ${movedViewBox.y} ${movedViewBox.w} ${movedViewBox.h}`);
             }
         }
 
         svgContainer.onmouseup = function(e) {
             if (isPanning) {
+                $(this).css("cursor", "default");
                 endPoint = {
                     x: e.x,
                     y: e.y
@@ -836,7 +844,7 @@
                     w: viewBox.w,
                     h: viewBox.h
                 };
-                svgImage.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+                svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
                 isPanning = false;
             }
         }
