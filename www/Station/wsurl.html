@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width,initial-scale=1.0" />
+
+    <script type="text/javascript" src="../static/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="../static/js/DBase.js"></script>
+
+    <style>
+        table.altrowstable {
+            font-family: verdana, arial, sans-serif;
+            font-size: 11px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #a9c6c9;
+            border-collapse: collapse;
+        }
+        
+        table.altrowstable th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #a9c6c9;
+        }
+        
+        table.altrowstable td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #a9c6c9;
+        }
+        
+        .oddrowcolor {
+            background-color: #d4e3e5;
+        }
+        
+        .evenrowcolor {
+            background-color: #c3dde0;
+        }
+    </style>
+</head>
+
+<body>
+    <form id="formId">
+        <div style="position: absolute; top: 0px; height: 100%; width: 100%; background-color: #EEEEEE;">
+            <table align="center" class="altrowstable" style="margin-top: 30px; border-collapse:separate; border-spacing:0px 0px;">
+                <tr>
+                    <td>数据接收ip</td>
+                    <td><input class="val" type="text" id="ip" placeholder="请输入数据接收的ip"></td>
+                </tr>
+                <tr>
+                    <td>数据接收端口</td>
+                    <td><input class="val" type="text" id="port" placeholder="数据接收的端口"></td>
+                </tr>
+
+            </table>
+        </div>
+    </form>
+</body>
+
+</html>

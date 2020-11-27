@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>数据查询</title>
+
+    <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+    <script type="text/javascript" src="static/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="static/js/jquery.table2excel.js"></script>
+    <script type="text/javascript" src="static/js/DBase.js"></script>
+    <script type="text/javascript" src="static/js/date.format.js"></script>
+
+
+    <style type="text/css">
+        .time {
+            margin: 0 auto;
+            width: 1000px;
+            height: 50px;
+            position: relative;
+            left: 10px;
+            top: 5px;
+        }
+        
+        caption {
+            caption-side: top;
+            margin: auto
+        }
+        
+        table.altrowstable {
+            margin: 1% 1% 1% 0%;
+            font-family: verdana, arial, sans-serif;
+            font-size: 15px;
+            color: #333333;
+            border-width: 2px;
+            border-color: #334749;
+            border-collapse: collapse;
+        }
+        
+        table.altrowstable th {
+            border-width: 2px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #a9c6c9;
+        }
+        
+        table.altrowstable td {
+            border-width: 2px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #a9c6c9;
+            width: 130px;
+        }
+        
+        .oddrowcolor {
+            background-color: #d4e3e5;
+        }
+        
+        .evenrowcolor {
+            background-color: #c3dde0;
+        }
+        
+        .btn {
+            position: absolute;
+            /* top: 30px; */
+            left: 700px;
+        }
+        
+        br {
+            line-height: 150%;
+        }
+        
+        input,
+        button {
+            border: none;
+            outline: none;
+        }
+        
+        .tl-price-input {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 7px 0;
+            background: #F4F4F7;
+            border-radius: 3px;
+            padding-left: 5px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+        }
+        
+        .tl-price-input:focus {
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
+        }
+        
+        .ant-btn {
+            line-height: 1.499;
+            position: relative;
+            display: inline-block;
+            font-weight: 400;
+            white-space: nowrap;
+            text-align: center;
+            background-image: none;
+            border: 1px solid transparent;
+            -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+            cursor: pointer;
+            -webkit-transition: all .3s cubic-bezier(.645, .045, .355, 1);
+            transition: all .3s cubic-bezier(.645, .045, .355, 1);
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            height: 32px;
+            padding: 0 15px;
+            font-size: 14px;
+            border-radius: 4px;
+            color: rgba(0, 0, 0, 0.65);
+            background-color: #fff;
+            border-color: #d9d9d9;
+        }
+        
+        .ant-btn-primary {
+            color: #fff;
+            background-color: #1890ff;
+            border-color: #1890ff;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+            -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+        }
+        
+        .ant-btn-red {
+            color: #fff;
+            background-color: #FF5A44;
+            border-color: #FF5A44;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+            -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+        }
+    </style>
+
+</head>
+
+
+<body style="overflow-x: hidden"></body>
+
+<body>
+
+    <table id="demo" lay-filter="test"></table>
+
+    <div id="menu" class="time">
+        <label>传感器IP:</label>
+        <input type="value" id="ip" class="tl-price-input" style="height:35px;width:150px" value="192.168.8.35">&emsp;&emsp;
+        <label>传感器通道:</label>
+        <input type="value" id="tnum" class="tl-price-input" style="height:35px;width:50px" value="1">&emsp;&emsp;&emsp;&emsp;
+        <label>传感器编号:</label>
+        <input type="value" id="snum" class="tl-price-input" style="height:35px;width:50px" value="1"><br><br>
+        <label class="blue">开始时间:</label>
+        <!-- <input type="date" id="start" style="height:40px;width:200px" value="2019-08-12">&emsp;&emsp; -->
+        <input type="datetime-local" id="start" class="tl-price-input" style="height:35px;width:150px">&emsp;
+
+        <label>结束时间:</label>
+        <!-- <input type="date" id="end" style="height:40px;width:200px" value="2019-08-13"><br><br> -->
+        <input type="datetime-local" id="end" class="tl-price-input" style="height:35px;width:150px">&emsp;&emsp;
+
+
+        <button id="test" class="ant-btn ant-btn-red" style="height:35px;width:60px">查询</button>&emsp;
+        <button id="export" class="ant-btn ant-btn-red" style="height:35px;width:90px;">导出表格</button>
+        <!-- </div> -->
+        <!-- <div style = "width: 100%;height: 100%;"> -->
+        <table class="altrowstable" id='tabletest'>
+
+            <tr>
+                <td>传感器名称</td>
+                <td>传感器ip</td>
+                <td>传感器类型</td>
+                <td>传感器通道</td>
+                <td>传感器编号</td>
+                <td>传感器测量值</td>
+                <td>时间</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function() {
+            var myDate = new Date(),
+                Y = myDate.getFullYear(),
+                M = myDate.getMonth() + 1,
+                D = myDate.getDate();
+            //处理月是一位的情况
+            if ((M + '').length == 1) {
+                M = '0' + (M + '');
+            }
+            //处理日是一位的情况
+            if ((D + '').length == 1) {
+                D = '0' + (D + '')
+            }
+            var curDay = Y + '-' + M + '-' + D;
+            //console.log(curDay)
+            $('#start').val(curDay + 'T00:00');
+            $('#end').val(curDay + 'T23:59');
+
+            start = $("#start").val();
+            end = $("#end").val();
+
+            let date_start = new Date(start);
+            let date_end = new Date(end);
+
+            start = date_start.format("Y-m-d H:i:s");
+            end = date_end.format("Y-m-d H:i:s");
+
+            ip = $("#ip").val();
+            tnum = $("#tnum").val();
+            snum = $("#snum").val();
+            let transmit_Tnum = 'T' + tnum;
+            let transmit_Snum = 'D' + snum;
+            //console.log(start, end);
+
+
+            let Cols = ["name", "ip", "channel", "number", "type", "high_alert", "low_alert", "check_parameter", "replace_sensor_id", "x", "y", "monitor_name"];
+            let sensor_URL = "/ZcmDB|sensor_info|select name,ip,channel,number,type from sensors where ip == '" + ip + "' and channel == '" + tnum + "' and number == '" + snum + "';|";
+            let Data = window.selectDB(sensor_URL, Cols);
+            //console.log(sensor_URL);
+            //console.log(Data);
+
+            let TableCols = ["D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11",
+                "D12", "D13", "D14", "D15", "D16"
+            ];
+            let URL = "/ZcmDB|" + ip + "|select D0, " + transmit_Snum + " from " + transmit_Tnum + " where D0 >= '" + start + "' and D0 <= '" + end + "';|";
+            let data = window.selectDB(URL, TableCols);
+            //console.log(URL)
+
+            var tr;
+
+            for (var i = 0; i < data.length; i++) {
+                tr = '<td>' + Data[0].name + '</td>' + '<td>' + Data[0].ip + '</td>' + '<td>' + Data[0].type +
+                    '</td>' + '<td>' + Data[0].channel + '</td>' + '<td>' + Data[0].number + '</td>' +
+                    '<td>' + data[i][transmit_Snum] + '</td>' + '<td>' + data[i]["D0"] + '</td>';
+                $("#tabletest").append('<tr>' + tr + '</tr>')
+            }
+
+
+        })
+
+
+        $("#test").click(function() {
+
+
+            start = $("#start").val();
+            end = $("#end").val();
+
+            let date_start = new Date(start);
+            let date_end = new Date(end);
+
+            start = date_start.format("Y-m-d H:i:s");
+            end = date_end.format("Y-m-d H:i:s");
+            ip = $("#ip").val();
+            tnum = $("#tnum").val();
+            snum = $("#snum").val();
+            let transmit_Tnum = 'T' + tnum;
+            let transmit_Snum = 'D' + snum;
+
+            //console.log(start, end);
+
+
+            let Cols = ["name", "ip", "channel", "number", "type", "high_alert", "low_alert", "check_parameter", "replace_sensor_id", "x", "y", "monitor_name"];
+            let sensor_URL = "/ZcmDB|sensor_info|select name,ip,channel,number,type from sensors where ip == '" + ip + "' and channel == '" + tnum + "' and number == '" + snum + "';|";
+            let Data = window.selectDB(sensor_URL, Cols);
+            // console.log(Data);
+            // console.log(sensor_URL)s
+
+
+            let TableCols = ["D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11",
+                "D12", "D13", "D14", "D15", "D16"
+            ];
+            let URL = "/ZcmDB|" + ip + "|select D0, " + transmit_Snum + " from " + transmit_Tnum + " where D0 >= '" + start + "' and D0 <= '" + end + "';|";
+            //console.log(URL)
+            let data = window.selectDB(URL, TableCols);
+            //console.log(data);
+
+            var tr;
+
+
+
+            for (var i = 0; i < data.length; i++) {
+                tr = '<td>' + Data[0].name + '</td>' + '<td>' + Data[0].ip + '</td>' + '<td>' + Data[0].type +
+                    '</td>' + '<td>' + Data[0].channel + '</td>' + '<td>' + Data[0].number + '</td>' +
+                    '<td>' + data[i][transmit_Snum] + '</td>' + '<td>' + data[i]["D0"] + '</td>';
+                $("#tabletest").append('<tr>' + tr + '</tr>')
+            }
+
+        });
+
+        //导出表格
+        $('#export').click(function() {
+            $("#tabletest").table2excel({
+                exclude: ".noExl",
+                name: "Excel Document Name",
+                filename: "数据查询",
+                exclude_img: true,
+                exclude_links: true,
+                exclude_inputs: true
+            });
+        })
+    </script>
+</body>
+
+</html>

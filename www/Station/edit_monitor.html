@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width,initial-scale=1.0" />
+
+	<script type="text/javascript" src="../static/js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../static/js/DBase.js"></script>
+
+	<style>
+		table.altrowstable {
+		font-family: verdana,arial,sans-serif;
+		font-size:11px;
+		color:#333333;
+		border-width: 1px;
+		border-color: #a9c6c9;
+		border-collapse: collapse;
+		}
+		table.altrowstable th {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #a9c6c9;
+		}
+		table.altrowstable td {
+		border-width: 1px;
+		padding: 8px;
+		border-style: solid;
+		border-color: #a9c6c9;
+		}
+		.oddrowcolor{
+		background-color:#d4e3e5;
+		}
+		.evenrowcolor{
+		background-color:#c3dde0;
+		}
+	</style>
+</head>
+
+<body>
+	<form id="formId">
+		<div style="position: absolute; top: 0px; height: 100%; width: 100%; background-color: #EEEEEE;">
+			<table align="center" class="altrowstable" style="margin-top: 30px; border-collapse:separate; border-spacing:0px 0px;">
+				<tr>
+					<td>监测截面类型</td>
+					<td>
+						<select id="type">
+							<option class="val" id="wind_tem" value="northsite">北部截面</option>
+							<option class="val" id="dist_angle" value="southsite">南部截面</option>
+							<option class="val" id="light" value="midsite">中部截面</option>
+							<option class="val" id="light" value="northshack">北部雨棚</option>
+							<option class="val" id="light" value="southshack">南部雨棚</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>监测截面名称</td>
+					<td><input class="val" type="text" id="name" placeholder="请输入监测截面名称"></td>
+				</tr>
+				<tr>
+					<td>监测截面英文名称</td>
+					<td><input class="val" type="text" id="eng_name" placeholder="请输入监测截面英文名称"></td>
+				</tr>
+
+				<!-- <tr>
+					<td>传感器通道</td>
+					<td>
+						<select id="tnum" >
+						<option class="val" type="radio" id="tnum" value="1">通道1
+						<option class="val" type="radio" id="tnum" value="2">通道2
+						</select>
+					</td>
+				</tr> -->
+
+
+			</table>
+		</div>
+	</form>
+</body>
+
+</html>

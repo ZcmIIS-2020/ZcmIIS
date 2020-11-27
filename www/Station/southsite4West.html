@@ -1,0 +1,525 @@
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>实时监测</title>
+    <link rel="stylesheet" href="../static/LayUI/css/layui.css" media="all">
+    <link rel="stylesheet" href="../static/css/desktop.css">
+
+    <script type="text/javascript" src="../static/js/sensors.js"></script>
+    <script type="text/javascript" src="../static/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="../static/js/DBase.js"></script>
+    <!-- <script type="text/javascript" src="../js/tools.js" ></script> -->
+    <script src="../static/LayUI/layui.js"></script>
+    <style type="text/css">
+        .img {
+            height: 18px;
+            width: 18px;
+        }
+        /* 显示信息框 */
+        
+        #label {
+            position: absolute;
+            padding: 10px;
+            z-index: 999999;
+            background: #00ff00;
+            line-height: 1;
+            border-radius: 5px;
+            display: none;
+            pointer-events: none;
+        }
+    </style>
+    <script type="text/javascript">
+    </script>
+
+    <div id="label"></div>
+
+</head>
+
+<body style="overflow-x: hidden"></body>
+
+<body style="overflow-y: hidden"></body>
+
+<body style="height: 100%;">
+    <h2 style="text-align: center;">南部第四根柱西侧监测截面</h2>
+    <div id="dataStatus" style="left: 10px; top: 10px; position: absolute">
+        <p style="color:#00FF00; font-size:20px;" ;>传感器状态：正常</p>
+    </div>
+    <div id="sectionImg" style="left: 30px; top: 60px; width: 900px; height: 450px; position: absolute">
+        <img src="./fig/jiemian.png" width=900px height=450px>
+    </div>
+
+    <canvas id="canvas" width="100%" height="100%"></canvas>
+
+    <!-- 让图片显示在中间 -->
+    <script type="text/javascript">
+        var winWidth = 0;
+        var winHeight = 0;
+
+        function findDimensions() //函数：获取尺寸
+        {
+            //获取窗口宽度
+            if (window.innerWidth)
+                winWidth = window.innerWidth;
+            else if ((document.body) && (document.body.clientWidth))
+                winWidth = document.body.clientWidth;
+            //获取窗口高度
+            if (window.innerHeight)
+                winHeight = window.innerHeight;
+            else if ((document.body) && (document.body.clientHeight))
+                winHeight = document.body.clientHeight;
+
+            //通过深入Document内部对body进行检测，获取窗口大小
+            if (document.documentElement && document.documentElement.clientHeight &&
+                document.documentElement.clientWidth) {
+                winHeight = document.documentElement.clientHeight;
+                winWidth = document.documentElement.clientWidth;
+            }
+            //结果输出至两个文本框
+            //console.log("windowWidth:"+winWidth / 32);
+            //console.log("windowHeight:"+winHeight / 32);
+
+            var iw = document.getElementById("sectionImg").style.width
+            var ih = document.getElementById("sectionImg").style.height
+
+            var iw = iw.substring(0, iw.length - 2);
+            var ih = ih.substring(0, ih.length - 2);
+
+            //console.log("iw:"+iw);
+            //console.log("ih:"+ih);
+            //更改div显示的位置
+            document.getElementById("sectionImg").style.left = (winWidth - iw) / 2 + "px";
+            document.getElementById("sectionImg").style.top = (winHeight - iw) / 2 + 230 + "px";
+
+            var l = document.getElementById("sectionImg").style.left
+            var h = document.getElementById("sectionImg").style.top
+                //console.log("l:"+ l);
+                //console.log("h:"+ h);
+        }
+        findDimensions(); //调用函数，获取数值
+        window.onresize = findDimensions;
+    </script>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            // document.addEventListener('click', onDocumentClick);
+            document.addEventListener('dblclick', onDocumenDblClick);
+            document.oncontextmenu = function(ev) {
+                //先检查有没有菜单，若有，消失
+                if ($('.menu')) {
+                    $('.menu').css({
+                        display: 'none'
+                    })
+                }
+                //判断当前鼠标右键点击的dom是否为传感器
+                if (ev.target.className.includes('sensorImg')) {
+                    sensorMenu(document, ev);
+                } else {
+                    documentMenu(document, ev);
+                }
+            };
+
+            //点击左键时，菜单消失
+            document.onclick = function() {
+                if ($('.menu')) {
+                    $('.menu').css({
+                        display: 'none'
+                    })
+                }
+            }
+        }
+
+        var clickTimeId;
+        let dataDic = {};
+        let sensor_ip = [];
+
+        var thisURL = document.URL;
+        var getval = thisURL.split('?')[1];
+        var monitor_name = getval.split("=")[1];
+        //console.log("monitor_name:" + monitor_name)
+
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        //显示图片
+        function loadRec() {
+            context.globalCompositeOperation = "destination-over";
+            let TableCols = ["name", "ip", "channel", "number", "type", "high_alert", "low_alert", "check_parameter", "replace_sensor_id", "x", "y", "monitor_name"];
+            let URL = "/ZcmDB|sensor_info|select * from sensors;|";
+            let Data = window.selectDB(URL, TableCols);
+
+
+            setInterval(function() {
+                let sensorData = [];
+                for (var i = 0; i < Data.length; i++) {
+                    if (Data[i]["monitor_name"] == monitor_name) {
+                        sensorData.push(Data[i])
+                    }
+                }
+                for (var i = 0; i < sensorData.length; i++) {
+
+                    let trans_snum = sensorData[i]['number'];
+                    let trans_tnum = sensorData[i]['channel'];
+                    let trans_id = sensorData[i]['name'];
+                    let trans_ip = sensorData[i]['ip'];
+                    let low_alert = Number(sensorData[i]['low_alert']);
+                    let high_alert = Number(sensorData[i]['high_alert']);
+                    let trans_type = sensorData[i]["type"]
+
+
+                    data_tmp = dataDic[trans_ip];
+                    if (data_tmp != undefined) {
+                        data_dic = array2dic(data_tmp);
+
+
+                        if (data_dic[trans_tnum][trans_snum - 1] < low_alert) {
+                            //console.log("111111111111111111111111");
+                            document.getElementById("dataStatus").innerHTML = "<p style='color:#00ff00; font-size:20px;';>传感器状态：正常</p>"
+                            document.getElementById(trans_id).innerHTML = "<img class='img' src='fig/" + trans_type + ".png' draggable='false'/>";
+                        } else if (data_dic[trans_tnum][trans_snum - 1] > low_alert) { //console.log("2222222222222222222222");
+                            document.getElementById("dataStatus").innerHTML = "<p style='color:#ffa500; font-size:20px;';>传感器状态：预警</p>"
+                            document.getElementById(trans_id).innerHTML = "<img class='img' src='fig/" + trans_type + "Yujing.png' draggable='false'/>";
+                        } else if (data_dic[trans_tnum][trans_snum - 1] > high_alert) {
+                            document.getElementById("dataStatus").innerHTML = "<p style='color:#ff0000; font-size:20px;';>传感器状态：报警</p>"
+                            document.getElementById(trans_id).innerHTML = "<img class='img' src='fig/" + trans_type + "Baojing.png' draggable='false'/>";
+                        }
+                    }
+                }
+            }, 1000);
+        }
+
+        function loadRec1() {
+            context.globalCompositeOperation = "destination-over";
+            let TableCols = ["name", "ip", "channel", "number", "type", "high_alert", "low_alert", "check_parameter", "replace_sensor_id", "x", "y", "monitor_name"];
+            let URL = "/ZcmDB|sensor_info|select * from sensors;|";
+            let Data = window.selectDB(URL, TableCols);
+
+            let sensorData = [];
+            for (var i = 0; i < Data.length; i++) {
+                if (Data[i]["monitor_name"] == monitor_name) {
+                    sensorData.push(Data[i]);
+                    sensor_ip.push(Data[i]["ip"]);
+                }
+            }
+            //console.log(sensorData);
+            for (var i = 0; i < sensorData.length; i++) {
+                var x = sensorData[i]["x"];
+                var y = sensorData[i]["y"];
+
+                // 修改div的sid
+                var oDiv = document.createElement('div');
+                oDiv.style.left = x + 'px'; // 指定创建的DIV在文档中距离左侧的位置
+                oDiv.style.top = y + 'px'; // 指定创建的DIV在文档中距离顶部的位置
+                oDiv.style.position = 'absolute'; // 为新创建的DIV指定绝对定位
+                oDiv.style.width = '20px'; // 指定宽度
+                oDiv.style.height = '20px'; // 指定高度
+                oDiv.style.backgroundColor = "#transparent";
+                oDiv.onmouseover = mouseOver;
+                oDiv.onmouseout = mouseOut;
+                oDiv.onmousedown = mousedown;
+                oDiv.onmousemove = mousemove;
+                oDiv.onmouseup = mouseup;
+                oDiv.id = sensorData[i]['name'];
+                oDiv.className = "rect";
+                oDiv.transmit_Tnum = sensorData[i]['channel'];
+                oDiv.transmit_Snum = sensorData[i]['number'];
+                oDiv.transmit_ip = sensorData[i]['ip'];
+                oDiv.transmit_name = sensorData[i]['name'];
+                oDiv.low_alert = Number(sensorData[i]['low_alert']);
+                oDiv.high_alert = Number(sensorData[i]['high_alert']);
+                oDiv.type = sensorData[i]['type'];
+                document.getElementById("sectionImg").appendChild(oDiv);
+                //console.log("ip:" + oDiv.transmit_ip);
+                var sensorType = sensorData[i]["type"];
+                switch (sensorType) {
+                    case "distance":
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/distance.png' draggable='false'/>";
+                        break;
+                    case "angle":
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/angle.png' draggable='false'/>";
+                        break;
+                    case "rebar":
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/rebar.png' draggable='false'/>";
+                        break;
+                    case "accelerate":
+                        oDiv.innerHTML = "<img class='img sensorImg' src='fig/accelerate.png' draggable='false'/>";
+                        break;
+                }
+            }
+        }
+
+        function init() {
+            loadRec1();
+            loadRec();
+        }
+
+        init();
+
+        var startX
+        var startY
+        var endX
+        var endY
+        var ofX
+        var ofY
+        var onMouseDownFlag = false;
+
+        //鼠标按下时
+        function mousedown(evt) {
+            var one = document.getElementById("" + selectID + "");
+            if (!onMouseDownFlag) {
+                onMouseDownFlag = true;
+            }
+
+            var e = e || window.event;
+            startX = e.clientX - one.offsetLeft;
+            startY = e.clientY - one.offsetTop;
+            ofX = one.offsetLeft;
+            ofY = one.offsetTop
+                //console.log(startX, startY);
+                //console.log(one.offsetLeft, one.offsetTop);
+
+
+        }
+
+        //鼠标移动时
+        function mousemove(evt) {
+            var one = document.getElementById("" + selectID + "");
+            if (onMouseDownFlag) {
+                var e = e || window.event;
+                one.style.left = e.clientX - startX + "px";
+                one.style.top = e.clientY - startY + "px";
+                // //console.log(one.style.left, one.style.top);
+            }
+        }
+
+        //鼠标松开时
+        function mouseup(evt) {
+            if (onMouseDownFlag) {
+                onMouseDownFlag = false;
+            }
+            var one = document.getElementById("" + selectID + "");
+
+            endX = evt.clientX - startX;
+            endY = evt.clientY - startY;
+            //console.log(endX, endY);
+            document.onmousemove = null;
+            document.onmouseup = null;
+
+            let url1 = '/ZcmDB|sensor_info|update sensors set x = "' + endX + '", y = "' + endY + '" where name = "' + selectID + '";|';
+            window.updateDB(url1);
+        }
+
+        //websocket
+
+
+        var tarnsmit_data;
+        var transmit_Tnum;
+        var transmit_Snum;
+        var transmit_ip;
+        var transmit_name;
+        var low_alert;
+
+        // 双击进入传感器数据图表
+        function onDocumenDblClick(event) {
+            // 取消上次延时未执行的方法
+            clearTimeout(clickTimeId);
+            if (divClassName == "rect") {
+
+                let transmit_data = "ip=" + transmit_ip + '&T=T' + transmit_Tnum + '&D=D' + transmit_Snum + '&low_alert=' + low_alert + "&name=" + transmit_name;
+
+                window.open('flot.html?' + encodeURI(transmit_data), '_self', 'height=600, width=900, top=0,' +
+                    'left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no');
+            }
+
+        }
+
+
+        let wsCols = ["ip", "port"];
+        let wsURL_data = "/ZcmDB|wsurl|select * from websocket;|";
+        let ws_data = window.selectDB(wsURL_data, wsCols);
+        let wsDataLengh = ws_data.length;
+        //console.log(ws_data);
+
+        let ws_ip = ws_data[wsDataLengh - 1]['ip']
+        let ws_port = ws_data[wsDataLengh - 1]['port']
+
+        // var wsUrl = "ws://10.141.31.237:10000";
+        var wsUrl = "ws://" + ws_ip + ":" + ws_port;
+        //console.log(wsUrl)
+        testWebSocket();
+
+        function testWebSocket() {
+            websocket = new WebSocket(wsUrl);
+            websocket.onopen = function(evt) {
+                onOpen(evt)
+            };
+            websocket.onclose = function(evt) {
+                onClose(evt)
+            };
+            websocket.onmessage = function(evt) {
+                onMessage(evt)
+            };
+            websocket.onerror = function(evt) {
+                onError(evt)
+            };
+        }
+
+        function onOpen(evt) {
+            writeToScreen("CONNECTED");
+            doSend("WebSocket rocks");
+        }
+
+        function onClose(evt) {
+            writeToScreen("DISCONNECTED");
+            websocket.close();
+        }
+
+        function onMessage(evt) {
+            writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+            var result = [];
+
+            function Prase_web(t) {
+                var k = -1;
+
+                k = t.indexOf("|");
+                if (k >= 0) {
+                    result.push(t.substr(0, k));
+                    t = t.substr(k + 1);
+                    if (t.length > 0) {
+                        Prase_web(t, 0)
+                    }
+                } else t = "";
+
+                return result;
+            }
+
+            let arr = Prase_web(evt.data)
+            for (var i = 0; i < sensor_ip.length; i++) {
+                if (arr[1] == sensor_ip[i]) {
+                    dataDic[sensor_ip[i]] = arr.slice(2);
+                }
+            }
+        }
+
+        function onError(evt) {
+            writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+        }
+
+        function doSend(message) {
+            writeToScreen("SENT: " + message);
+            websocket.send(message);
+        }
+
+        function writeToScreen(message) {
+            var pre = document.createElement("p");
+            pre.style.wordWrap = "break-word";
+            pre.innerHTML = message;
+        }
+
+        function array2dic(data) {
+            dic = {};
+            var index_start = 0;
+            var index_end = 0;
+
+            if (data[0] != -1) {
+                for (var i = 1; i < 17; i++) {
+                    var len_data_i = Number(data[index_start]);
+
+                    if (len_data_i == -1) {
+                        index_end = index_start;
+                        dic[i] = [];
+                    } else {
+                        index_end = index_start + len_data_i;
+                        dic[i] = data.slice(index_start + 1, index_end + 1);
+                    }
+
+
+                    // 更新index_start
+                    index_start = index_end + 1;
+                }
+            }
+
+            return dic;
+        }
+
+        var selectID;
+        var divClassName;
+
+        function mouseOver(evt) {
+            $("#label").empty();
+            evt = evt || window.event;
+            var xPos = evt.pageX || evt.clientX || evt.offsetX || evt.x;
+            var yPos = (evt.pageY || evt.clientY || evt.offsetY || evt.y);
+
+            //防止label冲出右侧
+            if (xPos + parseInt($(this).css('width')) + 160 >= parseInt($("body").css('width'))) {
+                xPos = xPos - (parseInt($(this).css('width')) + 160);
+            }
+
+            //防止label冲出下侧
+            if (yPos + parseInt($(this).css('height')) + 90 >= parseInt($("body").css('height'))) {
+                yPos = yPos - (parseInt($(this).css('height')) + 90);
+            }
+
+            selectID = this.id;
+            divClassName = this.className;
+            transmit_Tnum = this.transmit_Tnum;
+            transmit_Snum = this.transmit_Snum;
+            transmit_ip = this.transmit_ip;
+            transmit_name = this.transmit_name;
+            low_alert = this.low_alert;
+
+            $("#" + selectID + "").css({
+                "backgroundColor": "#0044ff"
+            });
+
+            $("#label").css({
+                left: xPos,
+                top: yPos,
+                display: 'block'
+            });
+
+
+            ////console.log(data);
+            //console.log(transmit_ip);
+            //console.log(transmit_Tnum);
+            //console.log(transmit_Snum);
+            //console.log(transmit_name);
+
+            $("#label").html("传感器名称：" + transmit_name + " <br/> 数据ip：" + transmit_ip + " <br/> 数据通道：" + transmit_Tnum + " <br/> 数据编号：" + transmit_Snum + "<br/> 传感器数值：")
+            setInterval(function() {
+                data_tmp = dataDic[transmit_ip];
+                if (data_tmp != undefined) {
+                    data_dic = array2dic(data_tmp);
+
+                    // $("#label").html("传感器名称：" + transmit_name + " <br/> 数据ip：" + transmit_ip + " <br/> 数据通道：" + transmit_Tnum +  " <br/> 数据编号：" + transmit_Snum + "<br/> 传感器数值："+ data_dic[transmit_Tnum][transmit_Snum-1] + "")
+                    if (data_dic[transmit_Tnum][transmit_Snum - 1] != undefined) {
+                        $("#label").html("传感器名称：" + transmit_name + " <br/> 数据ip：" + transmit_ip + " <br/> 数据通道：" + transmit_Tnum + " <br/> 数据编号：" + transmit_Snum + "<br/> 传感器数值：" + data_dic[transmit_Tnum][transmit_Snum - 1] + "")
+                    } else {
+                        $("#label").html("传感器名称：" + transmit_name + " <br/> 数据ip：" + transmit_ip + " <br/> 数据通道：" + transmit_Tnum + " <br/> 数据编号：" + transmit_Snum + "<br/> 传感器数值：")
+                    }
+                }
+            }, 1000);
+
+        }
+
+        function mouseOut() {
+            divClassName = "img";
+            //console.log(divClassName);
+
+            $("#" + selectID + "").css({
+                "backgroundColor": "transparent"
+            });
+
+            $("#label").css({
+                display: 'none'
+            });
+            $("#label").empty();
+        }
+    </script>
+
+</body>
+
+</html>
