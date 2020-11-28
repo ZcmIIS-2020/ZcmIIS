@@ -5,9 +5,72 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
     <title>障碍检测</title>
+    <style type="text/css">
+    body {
+        background-color: #E5EBF6;
+    }
+    img{
+        margin-top: 10px;
+        max-width: 90%;
+        max-height: 90%;
+        display: block;
+        margin: auto;
+    }
+    .attack_detail{
+        position: absolute;
+        height: 30%;
+        left: 10px;
+        top: 10px;
+        right: 10px;
+        overflow: hidden;
+        z-index: 20;
+        background-color: rgb(255, 255, 255);
+    }
+    .left{
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        left: 10px;
+        top: 0px;
+        overflow: hidden;
+    }
+    .right{
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        right: 10px;
+        top: 0px;
+        overflow: hidden;
+    }
+    .attack_image{
+        position: absolute;
+        height: 65%;
+        left: 10px;
+        bottom: 10px;
+        right: 10px;
+        overflow: hidden;
+        z-index: 20;
+        background-color: rgb(255, 255, 255);
+    }
+    </style>
 </head>
 
 <body>
+    <div id="attack_detail" class="attack_detail">
+        <div id="left" class="left">
+            <p><b>入侵经度：</b> x</p>
+            <p><b>入侵纬度：</b> y</p>
+            <p><b>入侵坐标：</b> (x,y)</p>
+            <p><b>入侵时间：</b>a</p>
+        </div> 
+        <div id="right" class="right">
+            <p><b>障碍详情：</b>有挖掘机工作</p>
+        </div>   
+            
+    </div>
+    <div id="attack_image" class="attack_image">
+        <img src="static/images/background1.jpg" alt="图片加载失败">
+    </div>
 
 </body>
 <script>
