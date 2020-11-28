@@ -13,6 +13,10 @@
             width: 100%;
             height: 100%;
         }
+        
+        #bubble_body:hover {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -661,7 +665,7 @@
                 <g id="train_part1" transform="translate(875,997)">
                     <animateTransform attributeName="transform" type="translate"
                      values="875,997;875,1307;875,997"
-                     dur="5s"
+                     dur="22s"
                     repeatCount="indefinite"/>
                     <path id="SvgjsPath1307"
                           d="M 0 9.25L 9.25 0L 46.25 0L 55.5 9.25L 55.5 66.98013472401306L 0 66.98013472401306L 0 9.25Z"
@@ -671,7 +675,7 @@
                 <g id="train_part2" transform="translate(881.4769847168502,1004.6320772906931)">
                     <animateTransform attributeName="transform" type="translate"
                      values="881.4769847168502,1004.6320772906931;881.4769847168502,1314.6320772906931;881.4769847168502,1004.6320772906931"
-                     dur="5s"
+                     dur="22s"
                     repeatCount="indefinite"/>
                     <path id="SvgjsPath1311"
                           d="M 0 7.091005094383211L 7.091005094383211 0L 35.45502547191605 0L 42.546030566299265 7.091005094383211L 42.546030566299265 33.65302909228563L 0 33.65302909228563L 0 7.091005094383211Z"
@@ -681,7 +685,7 @@
                 <g id="train_part3" transform="translate(881.4769847168502,1042.312060297568)">
                     <animateTransform attributeName="transform" type="translate"
                      values="881.4769847168502,1042.312060297568;881.4769847168502,1352.312060297568;881.4769847168502,1042.312060297568"
-                     dur="5s"
+                     dur="22s"
                     repeatCount="indefinite"/>
                     <path id="SvgjsPath1315"
                           d="M 4.742314411550439 0L 9.69945353722171 0C 16.022539419288965 0 16.022539419288965 14.226943234651317 9.69945353722171 14.226943234651317L 4.742314411550439 14.226943234651317C -1.5807714705168132 14.226943234651317 -1.5807714705168132 0 4.742314411550439 0Z"
@@ -691,7 +695,7 @@
                 <g id="train_part4" transform="translate(908.9309100199916,1042.872340425532)">
                     <animateTransform attributeName="transform" type="translate"
                     values="908.9309100199916,1042.872340425532;908.9309100199916,1352.872340425532;908.9309100199916,1042.872340425532"
-                    dur="5s"
+                    dur="22s"
                    repeatCount="indefinite"/>
                     <path id="SvgjsPath1319"
                           d="M 4.368794326241135 0L 10.72331093691676 0C 16.54837003857161 0 16.54837003857161 13.106382978723405 10.72331093691676 13.106382978723405L 4.368794326241135 13.106382978723405C -1.4562647754137117 13.106382978723405 -1.4562647754137117 0 4.368794326241135 0Z"
@@ -701,7 +705,7 @@
                 <g id="train_part5" transform="translate(875,1059.720560255928)">
                     <animateTransform attributeName="transform" type="translate"
                     values="875,1059.720560255928;875,1369.720560255928;875,1059.720560255928"
-                    dur="5s"
+                    dur="22s"
                    repeatCount="indefinite"/>
                     <path id="SvgjsPath1323"
                           d="M 4.759813248024029 0L 50.74018675197597 0C 57.08660441600801 0 57.08660441600801 14.279439744072087 50.74018675197597 14.279439744072087L 4.759813248024029 14.279439744072087C -1.5866044160080097 14.279439744072087 -1.5866044160080097 0 4.759813248024029 0Z"
@@ -731,18 +735,20 @@
 
         //点击障碍检测的警告标志，进入新的页面，里面展示障碍的详细信息
         body.click(function(e) {
-            let e_x = e.offsetX;
-            let e_y = e.offsetY;
-            let a = [e_x, e_y];
             let jn = {
                 "id": "attack_insp",
-                "title": "入侵检测(" + x + "," + y + ")",
-                "webSrc": "./attack_insp.html?name=dff&gender=male&a=a", //是否能传别的格式的数据
+                "title": "入侵检测" + dateFormat("HH:MM:SS", new Date()),
+                "date": dateFormat("YYYY-mm-dd HH:MM:SS", new Date()),
+                "x": e.offsetX,
+                "y": e.offsetY,
+                "longitude": "113°41′",
+                "latitude": "29°58′",
+                "reason": "施工",
+                "elze": "无",
+                "webSrc": null,
             }
-            new parent.newWindow($('#desktop', parent.document).get(0), $('#taskIcon', parent.document).get(0), 'attack_insp', jn).init();
-
-
-
+            jn.webSrc = `./attack_insp.html?id=${jn.id}&title=${jn.title}&date=${jn.date}&x=${jn.x}&y=${jn.y}&longitude=${jn.longitude}&latitude=${jn.latitude}&reason=${jn.reason}&elze=${jn.elze}`;
+            new parent.newWindow($('#desktop', parent.document).get(0), $('#taskIcon', parent.document).get(0), 'desk1windowattack_insp', jn).init();
         });
 
 
@@ -882,6 +888,26 @@
 
         svgContainer.onmouseleave = function(e) {
             isPanning = false;
+        }
+
+        function dateFormat(fmt, date) {
+            let ret;
+            const opt = {
+                "Y+": date.getFullYear().toString(), // 年
+                "m+": (date.getMonth() + 1).toString(), // 月
+                "d+": date.getDate().toString(), // 日
+                "H+": date.getHours().toString(), // 时
+                "M+": date.getMinutes().toString(), // 分
+                "S+": date.getSeconds().toString() // 秒
+                    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+            };
+            for (let k in opt) {
+                ret = new RegExp("(" + k + ")").exec(fmt);
+                if (ret) {
+                    fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+                };
+            };
+            return fmt;
         }
     });
 </script>

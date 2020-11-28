@@ -2,76 +2,74 @@
 <html>
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" ;/>
+
     <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="static/LayUI/css/layui.css" media="all">
+    <script src="static/LayUI/layui.js"></script>
     <title>障碍检测</title>
     <style type="text/css">
-    body {
-        background-color: #E5EBF6;
-    }
-    img{
-        margin-top: 10px;
-        max-width: 90%;
-        max-height: 90%;
-        display: block;
-        margin: auto;
-    }
-    .attack_detail{
-        position: absolute;
-        height: 30%;
-        left: 10px;
-        top: 10px;
-        right: 10px;
-        overflow: hidden;
-        z-index: 20;
-        background-color: rgb(255, 255, 255);
-    }
-    .left{
-        position: absolute;
-        height: 100%;
-        width: 50%;
-        left: 10px;
-        top: 0px;
-        overflow: hidden;
-    }
-    .right{
-        position: absolute;
-        height: 100%;
-        width: 50%;
-        right: 10px;
-        top: 0px;
-        overflow: hidden;
-    }
-    .attack_image{
-        position: absolute;
-        height: 65%;
-        left: 10px;
-        bottom: 10px;
-        right: 10px;
-        overflow: hidden;
-        z-index: 20;
-        background-color: rgb(255, 255, 255);
-    }
+        body {
+            background-color: #E5EBF6;
+            padding: 10px;
+        }
+        
+        .layui-card-body img,
+        video {
+            width: 850px;
+            height: 500px;
+            padding: 10px 0;
+        }
     </style>
 </head>
 
 <body>
-    <div id="attack_detail" class="attack_detail">
-        <div id="left" class="left">
-            <p><b>入侵经度：</b> x</p>
-            <p><b>入侵纬度：</b> y</p>
-            <p><b>入侵坐标：</b> (x,y)</p>
-            <p><b>入侵时间：</b>a</p>
-        </div> 
-        <div id="right" class="right">
-            <p><b>障碍详情：</b>有挖掘机工作</p>
-        </div>   
-            
-    </div>
-    <div id="attack_image" class="attack_image">
-        <img src="static/images/background1.jpg" alt="图片加载失败">
+    <div style="padding: 5px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-card-header">报警详细信息</div>
+                    <div class="layui-card-body">
+                        <p id="x"></p>
+                        <p id="y"></p>
+                        <p id="longitude"> </p>
+                        <p id="latitude"></p>
+                        <p id="date"></p>
+                        <p id="reason"></p>
+                        <p id="elze"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div style="padding: 5px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-card-header">报警相关图片</div>
+                    <div class="layui-card-body">
+                        <span><img src="static/attack_insp/attack1/img/施工1.png"></span>
+                        <span><img src="static/attack_insp/attack1/img/施工2.png"></span>
+                        <span><img src="static/attack_insp/attack1/img/施工3.png"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding: 5px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-card-header">报警相关视频</div>
+                    <div class="layui-card-body">
+                        <video src="static/attack_insp/attack1/video/1.mp4" controls>视频加载失败</video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script>
     $(document).ready(function() {
@@ -80,12 +78,29 @@
             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
         }
 
-        var name = getURLParameter('name');
-        var gender = getURLParameter('gender');
-        var a = getURLParameter('a');
-        console.log(name);
-        console.log(gender);
-        console.log(typeof(a));
+        var id = getURLParameter('id');
+        var title = getURLParameter('title');
+        var date = getURLParameter('date');
+        var x = getURLParameter('x');
+        var y = getURLParameter('y');
+        var longitude = getURLParameter('longitude');
+        var latitude = getURLParameter('latitude');
+        var reason = getURLParameter('reason');
+        var elze = getURLParameter('elze');
+        // console.log(id);
+        // console.log(title);
+        // console.log(date);
+        // console.log(x);
+        // console.log(y);
+        // console.log(longitude);
+        // console.log(latitude);
+        $("#x").html('<b>入侵坐标x：</b>' + x);
+        $("#y").html('<b>入侵坐标y：</b>' + y);
+        $("#longitude").html('<b>入侵经度：</b>' + longitude);
+        $("#latitude").html('<b>入侵纬度：</b>' + latitude);
+        $("#date").html('<b>入侵时间：</b>' + date);
+        $("#reason").html('<b>原因：</b>' + reason);
+        $("#elze").html('<b>其他：</b>' + elze);
     });
 </script>
 

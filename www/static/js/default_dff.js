@@ -391,156 +391,252 @@ $(document).ready(function() {
     //         flag = false;
     //     });
     // });
-    Highcharts.chart('cylinderChart', {
-        chart: {
-            type: 'cylinder',
-            options3d: {
-                enabled: true,
-                alpha: 20,
-                beta: 9,
-                depth: 54,
-                viewDistance: 0
-            }
-        },
-        title: {
-            text: '3D圆柱图'
-        },
-        credits: {
-            enabled: false //右下角不显示highcharts的logo
-        },
-        plotOptions: {
-            series: {
-                depth: 25,
-                colorByPoint: true,
-            }
-        },
-        yAxis: {
-            title: {
-                text: null
-            }
-        },
-        series: [{
-            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-            name: '数值',
-            showInLegend: false
-        }]
-    });
+    // Highcharts.chart('cylinderChart', {
+    //     chart: {
+    //         type: 'cylinder',
+    //         options3d: {
+    //             enabled: true,
+    //             alpha: 20,
+    //             beta: 9,
+    //             depth: 54,
+    //             viewDistance: 0
+    //         }
+    //     },
+    //     title: {
+    //         text: '3D圆柱图'
+    //     },
+    //     credits: {
+    //         enabled: false //右下角不显示highcharts的logo
+    //     },
+    //     plotOptions: {
+    //         series: {
+    //             depth: 25,
+    //             colorByPoint: true,
+    //         }
+    //     },
+    //     yAxis: {
+    //         title: {
+    //             text: null
+    //         }
+    //     },
+    //     series: [{
+    //         data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+    //         name: '数值',
+    //         showInLegend: false
+    //     }]
+    // });
 
-    var chart = Highcharts.chart('pieChart', {
-        chart: {
-            type: 'pie',
-            options3d: {
-                enabled: true,
-                alpha: 45,
-                beta: 0
-            }
-        },
-        title: {
-            text: '3D饼图'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        },
-        credits: {
-            enabled: false //右下角不显示highcharts的logo
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                depth: 35,
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.name}'
-                }
-            }
-        },
-        series: [{
-            type: 'pie',
-            name: '占比',
-            data: [
-                ['1', 45.0],
-                ['2', 26.8], {
-                    name: '3',
-                    y: 12.8,
-                    sliced: true,
-                    selected: true
-                },
-                ['4', 8.5],
-                ['5', 6.2],
-                ['6', 0.7]
-            ]
-        }]
-    });
+    // var chart = Highcharts.chart('pieChart', {
+    //     chart: {
+    //         type: 'pie',
+    //         options3d: {
+    //             enabled: true,
+    //             alpha: 45,
+    //             beta: 0
+    //         }
+    //     },
+    //     title: {
+    //         text: '3D饼图'
+    //     },
+    //     tooltip: {
+    //         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    //     },
+    //     credits: {
+    //         enabled: false //右下角不显示highcharts的logo
+    //     },
+    //     plotOptions: {
+    //         pie: {
+    //             allowPointSelect: true,
+    //             cursor: 'pointer',
+    //             depth: 35,
+    //             dataLabels: {
+    //                 enabled: true,
+    //                 format: '{point.name}'
+    //             }
+    //         }
+    //     },
+    //     series: [{
+    //         type: 'pie',
+    //         name: '占比',
+    //         data: [
+    //             ['1', 45.0],
+    //             ['2', 26.8], {
+    //                 name: '3',
+    //                 y: 12.8,
+    //                 sliced: true,
+    //                 selected: true
+    //             },
+    //             ['4', 8.5],
+    //             ['5', 6.2],
+    //             ['6', 0.7]
+    //         ]
+    //     }]
+    // });
 
-    Highcharts.setOptions({
-        global: {
-            useUTC: false
-        }
-    });
+    // Highcharts.setOptions({
+    //     global: {
+    //         useUTC: false
+    //     }
+    // });
 
-    function activeLastPointToolip(chart) {
-        var points = chart.series[0].points;
-        chart.tooltip.refresh(points[points.length - 1]);
-    }
-    var chart = Highcharts.chart('splineChart', {
-        chart: {
-            type: 'spline',
-            marginRight: 10,
-            events: {
-                load: function() {
-                    var series = this.series[0],
-                        chart = this;
-                    activeLastPointToolip(chart);
-                    setInterval(function() {
-                        var x = (new Date()).getTime(), // 当前时间
-                            y = Math.random(); // 随机值
-                        series.addPoint([x, y], true, true);
-                        activeLastPointToolip(chart);
-                    }, 1000);
-                }
-            }
-        },
-        title: {
-            text: '动态模拟实时数据'
-        },
-        xAxis: {
-            type: 'datetime',
-            tickPixelInterval: 150
-        },
-        yAxis: {
-            title: {
-                text: null
-            }
-        },
-        tooltip: {
-            formatter: function() {
-                return '<b>' + this.series.name + '</b><br/>' +
-                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                    Highcharts.numberFormat(this.y, 2);
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        series: [{
-            name: '随机数据',
-            data: (function() {
-                // 生成随机值
-                var data = [],
-                    time = (new Date()).getTime(),
-                    i;
-                for (i = -19; i <= 0; i += 1) {
-                    data.push({
-                        x: time + i * 1000,
-                        y: Math.random()
-                    });
-                }
-                return data;
-            }())
-        }]
-    });
+    // function activeLastPointToolip(chart) {
+    //     var points = chart.series[0].points;
+    //     chart.tooltip.refresh(points[points.length - 1]);
+    // }
+    // var chart = Highcharts.chart('splineChart', {
+    //     chart: {
+    //         type: 'spline',
+    //         marginRight: 10,
+    //         events: {
+    //             load: function() {
+    //                 var series = this.series[0],
+    //                     chart = this;
+    //                 activeLastPointToolip(chart);
+    //                 setInterval(function() {
+    //                     var x = (new Date()).getTime(), // 当前时间
+    //                         y = Math.random(); // 随机值
+    //                     series.addPoint([x, y], true, true);
+    //                     activeLastPointToolip(chart);
+    //                 }, 1000);
+    //             }
+    //         }
+    //     },
+    //     title: {
+    //         text: '动态模拟实时数据'
+    //     },
+    //     xAxis: {
+    //         type: 'datetime',
+    //         tickPixelInterval: 150
+    //     },
+    //     yAxis: {
+    //         title: {
+    //             text: null
+    //         }
+    //     },
+    //     tooltip: {
+    //         formatter: function() {
+    //             return '<b>' + this.series.name + '</b><br/>' +
+    //                 Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+    //                 Highcharts.numberFormat(this.y, 2);
+    //         }
+    //     },
+    //     legend: {
+    //         enabled: false
+    //     },
+    //     series: [{
+    //         name: '随机数据',
+    //         data: (function() {
+    //             // 生成随机值
+    //             var data = [],
+    //                 time = (new Date()).getTime(),
+    //                 i;
+    //             for (i = -19; i <= 0; i += 1) {
+    //                 data.push({
+    //                     x: time + i * 1000,
+    //                     y: Math.random()
+    //                 });
+    //             }
+    //             return data;
+    //         }())
+    //     }]
+    // });
 
+    // let chart = Highcharts.chart('湖工大Chart', {
+    //     chart: {
+    //         type: 'spline',
+    //         marginRight: 10,
+
+    //         events: {
+    //             load: function() {
+    //                 var series = this.series;
+    //                 setInterval(function() {
+    //                     //console.log(socketData);
+    //                     for (let i in socketData) {
+    //                         let t = parseInt(socketData[i]["name"].substring(1));
+    //                         if (t == currChannel) {
+    //                             let data = socketData[i]["data"];
+    //                             for (let j = 0; j < series.length; j++) {
+    //                                 let y;
+    //                                 if (j < data.length)
+    //                                     y = data[j];
+    //                                 else
+    //                                     y = 0;
+    //                                 let x = new Date().getTime();
+    //                                 series[j].addPoint([x, y], true, true);
+    //                             }
+    //                         }
+    //                     }
+
+    //                 }, 1000);
+
+    //             }
+    //         }
+    //     },
+    //     exporting: {
+    //         enabled: true,
+    //         buttons: {
+    //             contextButton: {
+    //                 y: 30,
+    //                 menuItems: [
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[0],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[1],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[3],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[4],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[5],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[6],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[8],
+    //                     Highcharts.getOptions().exporting.buttons.contextButton.menuItems[9],
+    //                 ]
+    //             },
+    //             // symbol:['circle', 'diamond', 'square', 'triangle', 'triangle-down','menu'],
+    //             minButton: {
+    //                 symbol: 'triangle-down',
+    //                 symbolStrokeWidth: 1,
+    //                 y: 30,
+    //                 onclick: function() {
+    //                     $("#" + eng_name + "Chart").hide();
+    //                 }
+    //             },
+    //         }
+    //     },
+    //     boost: {
+    //         useGPUTranslations: true
+    //     },
+    //     title: {
+    //         text: name + '-通道' + currChannel + '-实时数据'
+    //     },
+    //     subtitle: {
+    //         useHTML: true,
+    //         align: 'left',
+    //         text: '通道编号:    <span id="' + eng_name + 'Radios"></span>'
+    //     },
+    //     xAxis: {
+    //         type: 'datetime',
+    //         tickInterval: 1000, //单位：毫秒   
+    //         dateTimeLabelFormats: {
+    //             day: '%H:%M:%S'
+    //         },
+    //     },
+    //     yAxis: {
+    //         title: {
+    //             text: null
+    //         }
+    //     },
+    //     tooltip: {
+    //         formatter: function() {
+    //             return '<b>' + this.series.name + '</b><br/>' +
+    //                 Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+    //                 Highcharts.numberFormat(this.y, 2);
+    //         }
+    //     },
+    //     credits: {
+    //         enabled: false //右下角不显示highcharts的logo
+    //     },
+    //     series: series,
+    // });
+
+
+    //让图像伴随火车动画播放
     let index = 0;
     let step = 1;
     let interval = 4;
@@ -594,9 +690,9 @@ $(document).ready(function() {
                     break;
                 }
         }
-        if (index == 0)
+        if (index == -1)
             step = 1;
-        else if (index == (0 + interval * 2))
+        else if (index == (0 + interval * 2 + 1))
             step = -1;
         index = index + step;
     }, 1000);
