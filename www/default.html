@@ -37,40 +37,65 @@
                 <div id="map_title" class="map_title">武汉地铁7号线</div>
                 <iframe id="metro" src="metro.html" frameborder='no' scrolling="no" allowtransparency="yes"></iframe>
 
-                <div id="left_wrap">
+                <<<<<<< HEAD <div id="left_wrap">
                     <div id="left_box">
                         <div id="lcontent1" class="box_content_wrap"><img class="box_content" src="./static/images/湖工大.jpg"></div>
                         <div id="lcontent2" class="box_content_wrap"><img class="box_content" src="./static/images/板桥.jpg"></div>
                         <div id="lcontent3" class="box_content_wrap"><img class="box_content" src="./static/images/野芷湖.jpg"></div>
                     </div>
+            </div>
+
+
+            <div id="right_wrap">
+                <div id="right_box">
+                    <div id="rcontent1" class="box_content_wrap">
+                        <div style="width: 100%;height: 32.6%;" id="cylinderChart"></div>
+                    </div>
+                    <div id="rcontent2" class="box_content_wrap">
+                        <div style="width: 100%;height: 32.6%;" id="pieChart"></div>
+                    </div>
+                    <div id="rcontent3" class="box_content_wrap">
+                        <div style="width: 100%;height: 32.6%;" id="splineChart"></div>
+                    </div>
                 </div>
+            </div>
+            =======
+            <!-- <div id="left_wrap">
+                    <div id="left_box">
+                        <div class="box_content"><video style="width: 100%;height: 32.6%;" src="static/video/test.MP4" controls autoplay muted="muted" loop></video></div>
+                        <div class="box_content"><video style="width: 100%;height: 32.6%;" src="static/video/test1.mp4" controls autoplay muted="muted" loop></video></div>
+                        <div class="box_content"><video style="width: 100%;height: 32.6%;" src="static/video/test2.mp4" controls autoplay muted="muted" loop></video></div>
+                    </div>
+                </div> -->
 
 
-                <div id="right_wrap">
+            <!-- <div id="right_wrap">
                     <div id="right_box">
-                        <div id="rcontent1" class="box_content_wrap">
+                        <div class="box_content">
                             <div style="width: 100%;height: 32.6%;" id="cylinderChart"></div>
                         </div>
-                        <div id="rcontent2" class="box_content_wrap">
+                        <div class="box_content">
                             <div style="width: 100%;height: 32.6%;" id="pieChart"></div>
                         </div>
-                        <div id="rcontent3" class="box_content_wrap">
+                        <div class="box_content">
                             <div style="width: 100%;height: 32.6%;" id="splineChart"></div>
                         </div>
                     </div>
+                </div> -->
+            <div id="bottom_text"></div>
+            >>>>>>> ad421a088999ce5246399bec5f82c2d5953463d6
+            <div class="task">
+                <div id="taskIcon">
+                    <div id="attack_insp" class="attack_insp taskIcon"></div>
+                    <div id="rail_insp" class="rail_insp taskIcon"></div>
+                    <div id="tunnel_insp" class="tunnel_insp taskIcon"></div>
                 </div>
-                <div class="task">
-                    <div id="taskIcon">
-                        <div id="attack_insp" class="attack_insp taskIcon"></div>
-                        <div id="rail_insp" class="rail_insp taskIcon"></div>
-                        <div id="tunnel_insp" class="tunnel_insp taskIcon"></div>
-                    </div>
-                    <div id="webSocket" class="webSocket"></div>
-                    <div id="showTime" class="showTime"></div>
-                    <div id="zCloud" class="zCloud"></div>
-                </div>
+                <div id="webSocket" class="webSocket"></div>
+                <div id="showTime" class="showTime"></div>
+                <div id="zCloud" class="zCloud"></div>
             </div>
         </div>
+    </div>
     </div>
 </body>
 <script>

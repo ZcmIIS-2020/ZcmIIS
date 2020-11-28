@@ -1,0 +1,174 @@
+/*画布*/
+.outbox{
+    margin : 0 auto;
+    width:490px;
+    height:490px;
+    background-color: #d3d3d3;
+    position: relative;
+    /*left: 700px;*/
+    top: 160px;
+}
+.inbox{
+    width : 330px;
+    height : 330px;
+    background: white;
+    position: absolute;
+    left: 80px;
+    top: 80px;
+}
+
+.rectangle{
+    height: 32px;
+    width: 32px;
+    background-color: chartreuse;
+}
+img {
+    height: 30px;
+    width: 30px;
+}
+/*每个传感器相对位置*/
+/*第一组*/
+#angle {
+    position: absolute;
+    left: 40px;
+    top: 5px;
+}
+#change {
+    position: absolute;
+    left: 30px;
+    top: 40px;
+}
+#distance {
+    position: absolute;
+    left: 65px;
+    top: 40px;
+}
+
+/*第二组*/
+#humidity {
+    position: absolute;
+    left: 230px;
+    top: 5px;
+}
+#pressure {
+    position: absolute;
+    left: 220px;
+    top: 40px;
+}
+#temperature {
+    position: absolute;
+    left: 255px;
+    top: 40px;
+}
+
+/*第三组*/
+#wind {
+    position: absolute;
+    left: 430px;
+    top: 5px;
+}
+#angle2 {
+    position: absolute;
+    left: 412px;
+    top: 40px;
+}
+#change2 {
+    position: absolute;
+    left: 447px;
+    top: 40px;
+}
+
+/*第四组*/
+#distance2 {
+    position: absolute;
+    left: 10px;
+    top: 210px;
+}
+#humidity2 {
+    position: absolute;
+    left: 45px;
+    top: 210px;
+}
+#pressure2 {
+    position: absolute;
+    left: 28px;
+    top: 245px;
+}
+
+/*第五组*/
+#temperature2 {
+    position: absolute;
+    left: 415px;
+    top: 210px;
+}
+#wind2 {
+    position: absolute;
+    left: 450px;
+    top: 210px;
+}
+#angle3 {
+    position: absolute;
+    left: 430px;
+    top: 245px;
+}
+
+/*第六组*/
+#change3 {
+    position: absolute;
+    left: 40px;
+    top: 420px;
+}
+#distance3 {
+    position: absolute;
+    left: 30px;
+    top: 455px;
+}
+#humidity3 {
+    position: absolute;
+    left: 65px;
+    top: 455px;
+}
+
+/*第七组*/
+#pressure3 {
+    position: absolute;
+    left: 230px;
+    top: 420px;
+}
+#temperature3 {
+    position: absolute;
+    left: 220px;
+    top: 455px;
+}
+#wind3 {
+    position: absolute;
+    left: 255px;
+    top: 455px;
+}
+
+/*第八组*/
+#angle4 {
+    position: absolute;
+    left: 430px;
+    top: 420px;
+}
+#change4 {
+    position: absolute;
+    left: 412px;
+    top: 455px;
+}
+#distance4 {
+    position: absolute;
+    left: 447px;
+    top: 455px;
+}
+
+/* 显示信息框 */
+#label {
+    position: absolute;
+    padding: 10px;
+    background: rgba(200, 200, 203,0.7);
+    line-height: 1;
+    border-radius: 5px;
+    display: none;
+}
