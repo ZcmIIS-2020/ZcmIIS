@@ -659,8 +659,8 @@
                           fill="none"></path>
                 </g>
                 <g>
-                    <text id="train" font-family="microsoft yahei" font-size="40" x="850" y="1020" fill="white">地铁
-                        <animate attributeName="y" values="1100;1310;1100" dur="2s" rotate="auto" repeatCount="indefinite"/>
+                    <text  font-family="microsoft yahei" font-size="40" x="850" y="1020" fill="white">地铁
+                        <animate id="train" attributeName="y" values="1100;1310;1100" dur="16s" rotate="auto" repeatCount="indefinite"/>
                     </text>
                 </g>
             </g>
@@ -680,7 +680,7 @@
         var y;
 
         var train = $("#train");
-
+        console.log(train);
         barrierDetection();
 
         // setInterval(function() {
@@ -688,11 +688,14 @@
         // }, 1000);
 
         //点击障碍检测的警告标志，进入新的页面，里面展示障碍的详细信息
-        body.click(function() {
+        body.click(function(e) {
+            let e_x = e.offsetX;
+            let e_y = e.offsetY;
+            let a = [e_x, e_y];
             let jn = {
                 "id": "attack_insp",
-                "title": "入侵动态检测",
-                "webSrc": "https://www.baidu.com/",
+                "title": "入侵检测(" + x + "," + y + ")",
+                "webSrc": "./attack_insp.html?name=dff&gender=male&a=a",
             }
             new parent.newWindow($('#desktop', parent.document).get(0), $('#taskIcon', parent.document).get(0), 'attack_insp', jn).init();
 

@@ -1868,5 +1868,4 @@ window.onload = function() {
     //$('#bgid').src = 'desktop/images/background.jpg';
     new desk().init();
     $("#desk1").hide();
-
 };

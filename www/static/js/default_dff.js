@@ -543,7 +543,7 @@ $(document).ready(function() {
 
     let index = 0;
     let step = 1;
-    let interval = 2;
+    let interval = 3.5;
     let lcontent1 = $("#lcontent1");
     let lcontent2 = $("#lcontent2");
     let lcontent3 = $("#lcontent3");
@@ -562,9 +562,9 @@ $(document).ready(function() {
                     lcontent1.empty();
 
                     if (step == 1) {
-                        video.attr("src", "./static/video/湖工大下.MP4");
+                        video.attr("src", "./static/video/湖工大下.mp4");
                     } else if (step == -1) {
-                        video.attr("src", "./static/video/湖工大上.MP4");
+                        video.attr("src", "./static/video/湖工大上.mp4");
                     }
 
                     lcontent1.append(video);
@@ -584,9 +584,9 @@ $(document).ready(function() {
                     lcontent2.empty();
 
                     if (step == 1) {
-                        video.attr("src", "./static/video/板桥下.MP4");
+                        video.attr("src", "./static/video/板桥下.mp4");
                     } else if (step == -1) {
-                        video.attr("src", "./static/video/板桥上.MP4");
+                        video.attr("src", "./static/video/板桥上.mp4");
                     }
 
                     lcontent2.append(video);
@@ -595,6 +595,7 @@ $(document).ready(function() {
 
             case (0 + interval * 2):
                 {
+                    let video = $('<video class="box_content"  controls autoplay muted="muted" ></video>');
                     let child = lcontent3.children();
                     video.onended = null;
                     video.onended = function() {
@@ -605,9 +606,9 @@ $(document).ready(function() {
                     lcontent3.empty();
 
                     if (step == 1) {
-                        video.attr("src", "static/video/野芷湖下.MP4");
+                        video.attr("src", "static/video/野芷湖下.mp4");
                     } else if (step == -1) {
-                        video.attr("src", "static/video/野芷湖上.MP4");
+                        video.attr("src", "static/video/野芷湖上.mp4");
                     }
 
                     lcontent3.append(video);

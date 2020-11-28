@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
+    <title>障碍检测</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    $(document).ready(function() {
+        //解析url路径,获取参数
+        function getURLParameter(name) {
+            return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+        }
+
+        var name = getURLParameter('name');
+        var gender = getURLParameter('gender');
+        var a = getURLParameter('a');
+        console.log(name);
+        console.log(gender);
+        console.log(typeof(a));
+    });
+</script>
+
+</html>
