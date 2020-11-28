@@ -658,40 +658,51 @@
                     <path id="bubble_tail"  stroke="#ff0000" stroke-width="2"
                           fill="none"></path>
                 </g>
-                <g>
-                    <text  font-family="microsoft yahei" font-size="40" x="850" y="1020" fill="white">地铁
-                        <animate  attributeName="y" values="1100;1310;1100" dur="16s" rotate="auto" repeatCount="indefinite"/>
-                    </text>
-                </g>
-                <g id="SvgjsG1306" transform="translate(875,997)">
-                    <animate attributeName="transform" attributeType="XML"
-             from="translate(875,997)"  to="translate(875,1097)"
-             begin="0s" dur="5s"
-             fill="remove" repeatCount="indefinite"/>
+                <g id="train_part1" transform="translate(875,997)">
+                    <animateTransform attributeName="transform" type="translate"
+                     values="875,997;875,1307;875,997"
+                     dur="5s"
+                    repeatCount="indefinite"/>
                     <path id="SvgjsPath1307"
                           d="M 0 9.25L 9.25 0L 46.25 0L 55.5 9.25L 55.5 66.98013472401306L 0 66.98013472401306L 0 9.25Z"
                           stroke="rgba(255,102,102,1)" stroke-width="2" fill-opacity="1" fill="#ff6666">
                     </path>
                  </g>
-                <g id="SvgjsG1310" transform="translate(881.4769847168502,1004.6320772906931)">
+                <g id="train_part2" transform="translate(881.4769847168502,1004.6320772906931)">
+                    <animateTransform attributeName="transform" type="translate"
+                     values="881.4769847168502,1004.6320772906931;881.4769847168502,1314.6320772906931;881.4769847168502,1004.6320772906931"
+                     dur="5s"
+                    repeatCount="indefinite"/>
                     <path id="SvgjsPath1311"
                           d="M 0 7.091005094383211L 7.091005094383211 0L 35.45502547191605 0L 42.546030566299265 7.091005094383211L 42.546030566299265 33.65302909228563L 0 33.65302909228563L 0 7.091005094383211Z"
                           stroke="rgba(255,102,102,1)" stroke-width="2" fill-opacity="1" fill="#ffffff"></path>
                    
                 </g>
-                <g id="SvgjsG1314" transform="translate(881.4769847168502,1042.312060297568)">
+                <g id="train_part3" transform="translate(881.4769847168502,1042.312060297568)">
+                    <animateTransform attributeName="transform" type="translate"
+                     values="881.4769847168502,1042.312060297568;881.4769847168502,1352.312060297568;881.4769847168502,1042.312060297568"
+                     dur="5s"
+                    repeatCount="indefinite"/>
                     <path id="SvgjsPath1315"
                           d="M 4.742314411550439 0L 9.69945353722171 0C 16.022539419288965 0 16.022539419288965 14.226943234651317 9.69945353722171 14.226943234651317L 4.742314411550439 14.226943234651317C -1.5807714705168132 14.226943234651317 -1.5807714705168132 0 4.742314411550439 0Z"
                           stroke="rgba(255,102,102,1)" stroke-width="2" fill-opacity="1" fill="#ffffff"></path>
                     
                 </g>
-                <g id="SvgjsG1318" transform="translate(908.9309100199916,1042.872340425532)">
+                <g id="train_part4" transform="translate(908.9309100199916,1042.872340425532)">
+                    <animateTransform attributeName="transform" type="translate"
+                    values="908.9309100199916,1042.872340425532;908.9309100199916,1352.872340425532;908.9309100199916,1042.872340425532"
+                    dur="5s"
+                   repeatCount="indefinite"/>
                     <path id="SvgjsPath1319"
                           d="M 4.368794326241135 0L 10.72331093691676 0C 16.54837003857161 0 16.54837003857161 13.106382978723405 10.72331093691676 13.106382978723405L 4.368794326241135 13.106382978723405C -1.4562647754137117 13.106382978723405 -1.4562647754137117 0 4.368794326241135 0Z"
                           stroke="rgba(255,102,102,1)" stroke-width="2" fill-opacity="1" fill="#ffffff"></path>
                     
                 </g>
-                <g id="SvgjsG1322" transform="translate(875,1059.720560255928)">
+                <g id="train_part5" transform="translate(875,1059.720560255928)">
+                    <animateTransform attributeName="transform" type="translate"
+                    values="875,1059.720560255928;875,1369.720560255928;875,1059.720560255928"
+                    dur="5s"
+                   repeatCount="indefinite"/>
                     <path id="SvgjsPath1323"
                           d="M 4.759813248024029 0L 50.74018675197597 0C 57.08660441600801 0 57.08660441600801 14.279439744072087 50.74018675197597 14.279439744072087L 4.759813248024029 14.279439744072087C -1.5866044160080097 14.279439744072087 -1.5866044160080097 0 4.759813248024029 0Z"
                           stroke="rgba(255,102,102,1)" stroke-width="2" fill-opacity="1" fill="#ffffff"></path>
@@ -713,9 +724,7 @@
         var x = 900;
         var y;
 
-
         barrierDetection();
-
         // setInterval(function() {
         //     console.log("y:" + train.attr("y"))
         // }, 1000);
@@ -728,7 +737,7 @@
             let jn = {
                 "id": "attack_insp",
                 "title": "入侵检测(" + x + "," + y + ")",
-                "webSrc": "./attack_insp.html?name=dff&gender=male&a=a",
+                "webSrc": "./attack_insp.html?name=dff&gender=male&a=a", //是否能传别的格式的数据
             }
             new parent.newWindow($('#desktop', parent.document).get(0), $('#taskIcon', parent.document).get(0), 'attack_insp', jn).init();
 
