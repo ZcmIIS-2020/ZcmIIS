@@ -348,10 +348,7 @@ var zh_windowCount = 0,
     /*----------------------------*****************----------------------------*/
     zh_deskIcon = [
         [
-<<<<<<< HEAD
             { id: 'monitor', src: './static/images/monitor.png', title: '实时监测', webSrc: 'monitor.html' },
-=======
->>>>>>> ad421a088999ce5246399bec5f82c2d5953463d6
             { id: 'analysis', src: './static/images/analysis.png', title: '数据查询', webSrc: 'querydata.html' },
             { id: 'query', src: './static/images/query.png', title: '报警查询', webSrc: 'query.html' },
             { id: 'maintain', src: './static/images/maintain.png', title: '传感器配置', webSrc: 'maintain.html' },
@@ -1870,8 +1867,5 @@ window.onload = function() {
     }
     //$('#bgid').src = 'desktop/images/background.jpg';
     new desk().init();
-<<<<<<< HEAD
     $("#desk1").hide();
-=======
->>>>>>> ad421a088999ce5246399bec5f82c2d5953463d6
 };
