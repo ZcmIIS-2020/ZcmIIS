@@ -543,7 +543,7 @@ $(document).ready(function() {
 
     let index = 0;
     let step = 1;
-    let interval = 3.5;
+    let interval = 4;
     let lcontent1 = $("#lcontent1");
     let lcontent2 = $("#lcontent2");
     let lcontent3 = $("#lcontent3");
@@ -551,14 +551,7 @@ $(document).ready(function() {
         switch (index) {
             case 0:
                 {
-                    let video = $('<video class="box_content"  controls autoplay muted="muted" ></video>');
-                    let child = lcontent1.children();
-                    video.onended = null;
-                    video.onended = function() {
-                        alert("音频播放完成");
-                        lcontent1.empty();
-                        lcontent1.append(child);
-                    };
+                    let video = $('<video class="box_content"  autoplay muted="muted" ></video>');
                     lcontent1.empty();
 
                     if (step == 1) {
@@ -573,14 +566,7 @@ $(document).ready(function() {
 
             case (0 + interval):
                 {
-                    let video = $('<video class="box_content"  controls autoplay muted="muted" ></video>');
-                    let child = lcontent2.children();
-                    video.onended = null;
-                    video.onended = function() {
-                        alert("音频播放完成");
-                        lcontent2.empty();
-                        lcontent2.append(child);
-                    };
+                    let video = $('<video class="box_content"  autoplay muted="muted" ></video>');
                     lcontent2.empty();
 
                     if (step == 1) {
@@ -595,14 +581,7 @@ $(document).ready(function() {
 
             case (0 + interval * 2):
                 {
-                    let video = $('<video class="box_content"  controls autoplay muted="muted" ></video>');
-                    let child = lcontent3.children();
-                    video.onended = null;
-                    video.onended = function() {
-                        alert("音频播放完成");
-                        lcontent3.empty();
-                        lcontent3.append(child);
-                    };
+                    let video = $('<video class="box_content"  autoplay muted="muted" ></video>');
                     lcontent3.empty();
 
                     if (step == 1) {
@@ -620,8 +599,6 @@ $(document).ready(function() {
         else if (index == (0 + interval * 2))
             step = -1;
         index = index + step;
-        console.log("index:" + index);
-        console.log("strp:" + step);
     }, 1000);
 
 });
