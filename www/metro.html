@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" ;/>
 
     <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="static/js/DBase.js"></script>
     <style>
         #svgContainer {
             position: fixed;
@@ -660,7 +661,8 @@
                 </g>
                 <g id="SvgjsG1620">
                     <path id="bubble_tail"  stroke="#ff0000" stroke-width="2"
-                          fill="none"></path>
+                          fill="none">
+                     </path>
                 </g>
                 <g id="train_part1" transform="translate(875,997)">
                     <animateTransform attributeName="transform" type="translate"
@@ -727,172 +729,264 @@
 
         var x = 900;
         var y;
+        var intrusionLock = false; //避免websocket重复连接
+        var trainInfoLock = false; //避免websocket重复连接
 
-        barrierDetection();
+        dragAndZoom();
+        //barrierDetection();
+        //接收入侵的websocket
+        intrusionWebSocket();
+        //列车到达的websocket
+        trainInfoWebSocket();
         // setInterval(function() {
         //     console.log("y:" + train.attr("y"))
         // }, 1000);
 
-        //点击障碍检测的警告标志，进入新的页面，里面展示障碍的详细信息
-        body.click(function(e) {
-            let jn = {
-                    "id": "attack_insp",
-                    "title": "入侵检测" + dateFormat("HH:MM:SS", new Date()),
-                    // "x": e.offsetX,
-                    // "y": e.offsetY,
-                    // "longitude": "113°41′",
-                    // "latitude": "29°58′",
-                    // "reason": "施工",
-                    // "elze": "无",
-                    "date": dateFormat("YYYY-mm-dd HH:MM:SS", new Date()),
-                    "positioin": "DK28+986",
-                    "AType": "外部入侵",
-                    "webSrc": null,
-                }
-                //jn.webSrc = `./attack_insp.html?id=${jn.id}&title=${jn.title}&date=${jn.date}&x=${jn.x}&y=${jn.y}&position=${jn.positioin}&AType=${jn.AType}
-                //&longitude=${jn.longitude}&latitude=${jn.latitude}&reason=${jn.reason}&elze=${jn.elze}`;
-            jn.webSrc = `./attack_insp.html?id=${jn.id}&title=${jn.title}&date=${jn.date}&position=${jn.positioin}&AType=${jn.AType}`;
-            new parent.newWindow($('#desktop', parent.document).get(0), $('#taskIcon', parent.document).get(0), 'desk1window' + jn.id, jn).init();
-        });
-
-
         //障碍检测
         function barrierDetection() {
-            let possY_arry = [
-                [],
-                [1060.75, 1146.75],
-                [1168.75, 1256.75]
-            ];
+            let possY_arry = [1060.75, 1256.75];
             // "900:1060.75", //湖工大末
             // "900:1146.75", //板桥始
             // "900:1168.75", //板桥末
             // "900:1256.75", //野芷湖始
-            setInterval(function() {
-                let index = parseInt(Math.random() * 3);
-                if (index == 0) {
+
+
+            let start = possY_arry[0],
+                end = possY_arry[1];
+            y = start + Math.random() * (end - start);
+            body.attr({
+                "transform": "translate(" + (x - 300) + "," + y + ")"
+            });
+            tail.attr({
+                "d": "M" + (x - 200) + " " + (y + 37) + "L" + (x - 150) + " " + (y + 37)
+            });
+            body.show();
+            tail.show();
+            let counNum = 5;
+
+
+            function count() {
+                counNum--;
+                if (counNum <= 0) {
+                    clearInterval(coundown);
                     body.hide();
                     tail.hide();
-                } else {
-                    let start = possY_arry[index][0],
-                        end = possY_arry[index][1];
-                    y = start + Math.random() * (end - start);
-                    body.attr({
-                        "transform": "translate(" + (x - 300) + "," + y + ")"
-                    });
-                    tail.attr({
-                        "d": "M" + (x - 200) + " " + (y + 37) + "L" + (x - 150) + " " + (y + 37)
-                    });
-                    body.show();
-                    tail.show();
                 }
+            }
+            let coundown = setInterval(count, 1000);
+        }
+
+        //连接webSocket，并且设置onopen、onmessage、onclose、onerror事件
+        function intrusionWebSocket() {
+            var url = "ws://192.168.8.35";
+            var ws = new WebSocket(url); //申请一个WebSocket对象，参数是服务端地址，同http协议使用http://开头一样，WebSocket协议的url使用ws://开头，另外安全的WebSocket协议使用wss://开头
+            ws.onopen = function() {　　 //当WebSocket创建成功时，触发onopen事件
+                console.log("intrusion socket connected");　　
+            }
+            ws.onmessage = function(e) {　　 //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据　　
+                //console.log(e.data);　
+                //处理数据，并存下来
+                if (null != e.data && "" != e.data) {
+                    let strs = e.data.split('|');
+                    let DT = strs[1];
+                    let position = strs[2];
+                    let AType = "外部入侵";
+                    let url = `/ZcmDB|alarm|insert into Intrusion (DT,position,AType,Remark) values ('${DT}','${position}','${AType}','');|`;
+                    window.insertDB(url);
+                    barrierDetection();
+                    //console.log(url);
+                    //console.log(window.insertDB(url));
+                    //点击障碍检测的警告标志，进入新的页面，里面展示障碍的详细信息
+
+                    body.click(function(e) {
+                        let jn = {
+                                "id": "attack_insp",
+                                "title": "入侵检测" + DT,
+                                // "x": e.offsetX,
+                                // "y": e.offsetY,
+                                // "longitude": "113°41′",
+                                // "latitude": "29°58′",
+                                // "reason": "施工",
+                                // "elze": "无",
+                                "date": DT,
+                                "positioin": position,
+                                "AType": AType,
+                                "webSrc": null,
+                            }
+                            //jn.webSrc = `./attack_insp.html?id=${jn.id}&title=${jn.title}&date=${jn.date}&x=${jn.x}&y=${jn.y}&position=${jn.positioin}&AType=${jn.AType}
+                            //&longitude=${jn.longitude}&latitude=${jn.latitude}&reason=${jn.reason}&elze=${jn.elze}`;
+                        jn.webSrc = `./attack_insp.html?id=${jn.id}&title=${jn.title}&date=${jn.date}&position=${jn.positioin}&AType=${jn.AType}`;
+                        new parent.newWindow($('#desktop', parent.document).get(0), $('#taskIcon', parent.document).get(0), 'desk1window' + jn.id, jn).init();
+                    });
+                }
+
+            }
+            ws.onclose = function(e) {　　 //当客户端收到服务端发送的关闭连接请求时，触发onclose事件　　
+                console.log("intrusion socket close");
+                intrusionRecn();
+            }
+            ws.onerror = function(e) {　　 //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件　
+                console.log("intrusion socket error");
+                intrusionRecn();
+            }
+        }
+
+        //若websocket断开或出错，尝试重新连接
+        function intrusionRecn() {
+            if (intrusionLock) return;
+            intrusionLock = true;
+            //没连接上会一直重连，设置延迟避免请求过多
+            setTimeout(function() {
+                intrusionWebSocket();
+                intrusionLock = false;
             }, 1000);
         }
 
+        function trainInfoWebSocket() {
+            var url = "ws://192.168.8.35";
+            var ws = new WebSocket(url); //申请一个WebSocket对象，参数是服务端地址，同http协议使用http://开头一样，WebSocket协议的url使用ws://开头，另外安全的WebSocket协议使用wss://开头
+            ws.onopen = function() {　　 //当WebSocket创建成功时，触发onopen事件
+                console.log("trainInfo socket connected");　　
+            }
+            ws.onmessage = function(e) {　　 //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据　　
+                //console.log(e.data);　
+                //处理数据，并存下来
+                if (null != e.data && "" != e.data) {
+                    let strs = e.data.split('|');
+                    let position = strs[1];
+                    let isArrived = strs[2];
+                    console.log("地铁位置：", position);　　
+                    console.log("到达或离开位置：", isArrived);　　　
+                }
 
+            }
+            ws.onclose = function(e) {　　 //当客户端收到服务端发送的关闭连接请求时，触发onclose事件　　
+                console.log("trainInfo socket close");
+                trainInfoRecn();
+            }
+            ws.onerror = function(e) {　　 //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件　
+                console.log("trainInfo socket error");
+                trainInfoRecn();
+            }
+        }
+
+        //若websocket断开或出错，尝试重新连接
+        function trainInfoRecn() {
+            if (trainInfoLock) return;
+            trainInfoLock = true;
+            //没连接上会一直重连，设置延迟避免请求过多
+            setTimeout(function() {
+                trainInfoWebSocket();
+                trainInfoLock = false;
+            }, 1000);
+        }
 
         //让svg图像可拖住，可放大缩小
-        const svgContainer = document.getElementById("svgContainer");
-        const svg = document.getElementById("svg");
-        var viewBox = {
-            x: 0,
-            y: 868,
-            w: svgContainer.clientWidth,
-            h: svgContainer.clientHeight
-        };
-        //`${}`方式可以方便字符串拼接
-        svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
-        //记录初始的高和宽度
-        const svgSize = {
-            w: svgContainer.clientWidth,
-            h: svgContainer.clientHeight
-        };
-        var isPanning = false;
-        var startPoint = {
-            x: 0,
-            y: 0
-        };
-        var endPoint = {
-            x: 0,
-            y: 0
-        };
-        //当前svg的大小：原始svg的大小
-        var scale = 1;
-
-        svgContainer.onmousewheel = function(e) {
-            e.preventDefault();
-            var w = viewBox.w;
-            var h = viewBox.h;
-            var mx = e.offsetX; //mouse x  
-            var my = e.offsetY;
-            var dw = w * Math.sign(e.deltaY) * 0.04; //以svg为基准，应该移动的距离
-            var dh = h * Math.sign(e.deltaY) * 0.04;
-            var dx = dw * mx / svgSize.w; //以svgContainer为基准，应该移动的距离
-            var dy = dh * my / svgSize.h;
-            if (viewBox.w + dw < svgSize.w * 2 && viewBox.w + dw > svgSize.w * 0.5) {
-                viewBox = {
-                    x: viewBox.x - dx,
-                    y: viewBox.y - dy,
-                    w: viewBox.w + dw,
-                    h: viewBox.h + dh
-                };
-            }
-            scale = svgSize.w / viewBox.w;
-            svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
-
-        }
-
-
-        svgContainer.onmousedown = function(e) {
-            $(this).css("cursor", "default");
-            isPanning = true;
-            startPoint = {
-                x: e.x,
-                y: e.y
+        function dragAndZoom() {
+            const svgContainer = document.getElementById("svgContainer");
+            const svg = document.getElementById("svg");
+            var viewBox = {
+                x: 0,
+                y: 868,
+                w: svgContainer.clientWidth,
+                h: svgContainer.clientHeight
             };
-        }
+            //`${}`方式可以方便字符串拼接
+            svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+            //记录初始的高和宽度
+            const svgSize = {
+                w: svgContainer.clientWidth,
+                h: svgContainer.clientHeight
+            };
+            var isPanning = false;
+            var startPoint = {
+                x: 0,
+                y: 0
+            };
+            var endPoint = {
+                x: 0,
+                y: 0
+            };
+            //当前svg的大小：原始svg的大小
+            var scale = 1;
 
-        svgContainer.onmousemove = function(e) {
-            if (isPanning) {
-                $(this).css("cursor", "move");
-                endPoint = {
-                    x: e.x,
-                    y: e.y
-                };
-                var dx = (startPoint.x - endPoint.x) / scale;
-                var dy = (startPoint.y - endPoint.y) / scale;
-                var movedViewBox = {
-                    x: viewBox.x + dx,
-                    y: viewBox.y + dy,
-                    w: viewBox.w,
-                    h: viewBox.h
-                };
-                svg.setAttribute('viewBox', `${movedViewBox.x} ${movedViewBox.y} ${movedViewBox.w} ${movedViewBox.h}`);
-            }
-        }
-
-        svgContainer.onmouseup = function(e) {
-            if (isPanning) {
-                $(this).css("cursor", "default");
-                endPoint = {
-                    x: e.x,
-                    y: e.y
-                };
-                var dx = (startPoint.x - endPoint.x) / scale;
-                var dy = (startPoint.y - endPoint.y) / scale;
-                viewBox = {
-                    x: viewBox.x + dx,
-                    y: viewBox.y + dy,
-                    w: viewBox.w,
-                    h: viewBox.h
-                };
+            svgContainer.onmousewheel = function(e) {
+                e.preventDefault();
+                var w = viewBox.w;
+                var h = viewBox.h;
+                var mx = e.offsetX; //mouse x  
+                var my = e.offsetY;
+                var dw = w * Math.sign(e.deltaY) * 0.04; //以svg为基准，应该移动的距离
+                var dh = h * Math.sign(e.deltaY) * 0.04;
+                var dx = dw * mx / svgSize.w; //以svgContainer为基准，应该移动的距离
+                var dy = dh * my / svgSize.h;
+                if (viewBox.w + dw < svgSize.w * 2 && viewBox.w + dw > svgSize.w * 0.5) {
+                    viewBox = {
+                        x: viewBox.x - dx,
+                        y: viewBox.y - dy,
+                        w: viewBox.w + dw,
+                        h: viewBox.h + dh
+                    };
+                }
+                scale = svgSize.w / viewBox.w;
                 svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+
+            }
+
+
+            svgContainer.onmousedown = function(e) {
+                $(this).css("cursor", "default");
+                isPanning = true;
+                startPoint = {
+                    x: e.x,
+                    y: e.y
+                };
+            }
+
+            svgContainer.onmousemove = function(e) {
+                if (isPanning) {
+                    $(this).css("cursor", "move");
+                    endPoint = {
+                        x: e.x,
+                        y: e.y
+                    };
+                    var dx = (startPoint.x - endPoint.x) / scale;
+                    var dy = (startPoint.y - endPoint.y) / scale;
+                    var movedViewBox = {
+                        x: viewBox.x + dx,
+                        y: viewBox.y + dy,
+                        w: viewBox.w,
+                        h: viewBox.h
+                    };
+                    svg.setAttribute('viewBox', `${movedViewBox.x} ${movedViewBox.y} ${movedViewBox.w} ${movedViewBox.h}`);
+                }
+            }
+
+            svgContainer.onmouseup = function(e) {
+                if (isPanning) {
+                    $(this).css("cursor", "default");
+                    endPoint = {
+                        x: e.x,
+                        y: e.y
+                    };
+                    var dx = (startPoint.x - endPoint.x) / scale;
+                    var dy = (startPoint.y - endPoint.y) / scale;
+                    viewBox = {
+                        x: viewBox.x + dx,
+                        y: viewBox.y + dy,
+                        w: viewBox.w,
+                        h: viewBox.h
+                    };
+                    svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+                    isPanning = false;
+                }
+            }
+
+            svgContainer.onmouseleave = function(e) {
                 isPanning = false;
             }
         }
 
-        svgContainer.onmouseleave = function(e) {
-            isPanning = false;
-        }
 
         function dateFormat(fmt, date) {
             let ret;

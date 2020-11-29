@@ -50,10 +50,10 @@
             <div class="layui-col-md8" style="width: 100%;">
                 <div class="layui-card">
                     <div class="layui-card-header"><b>报警相关图片</b></div>
-                    <div class="layui-card-body" style="text-align: center;">
-                        <span><img src="static/attack_insp/attack1/img/施工1.png"></span>
-                        <span><img src="static/attack_insp/attack1/img/施工2.png"></span>
-                        <span><img src="static/attack_insp/attack1/img/施工3.png"></span>
+                    <div id="jpgs" class="layui-card-body" style="text-align: center;">
+                        <button type="button" class="layui-btn" id="uploadImg">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button>
                     </div>
                 </div>
             </div>
@@ -65,8 +65,10 @@
             <div class="layui-col-md8" style="width: 100%;">
                 <div class="layui-card">
                     <div class="layui-card-header"><b>报警相关视频</b></div>
-                    <div class="layui-card-body" style="text-align: center;">
-                        <video src="static/attack_insp/attack1/video/1.mp4" controls>视频加载失败</video>
+                    <div id="videos" class="layui-card-body" style="text-align: center;">
+                        <button type="button" class="layui-btn" id="uploadVideo">
+                            <i class="layui-icon">&#xe67c;</i>上传视频
+                        </button>
                     </div>
                 </div>
             </div>
@@ -91,7 +93,8 @@
         var date = getURLParameter('date');
         var position = getURLParameter('position');
         var AType = getURLParameter('AType');
-
+        var Remark = getURLParameter('Remark');
+        //console.log(Remark);
         // console.log(id);
         // console.log(title);
         // console.log(date);
@@ -108,7 +111,57 @@
         $("#date").html('<b>入侵时间：</b>' + date);
         $("#position").html('<b>入侵位置：</b>' + position);
         $("#AType").html('<b>入侵类型：</b>' + AType);
+        if (Remark == null || Remark == "") {
+            $("#uploadImg").show();
+            $("#uploadVideo").show();
+        } else {
+            $("#uploadImg").hide();
+            $("#uploadVideo").hide();
+            if (Remark.indexOf("mp4") != -1) {
+                $("#videos").empty();
+                $("#videos").append(`<video src="./static/attack_insp/${Remark}" controls>视频加载失败</video>`);
+            } else if (Remark.indexOf("jpg") != -1) {
+                $("#jpgs").empty();
+                $("#jpgs").append(`<span><img src="./static/attack_insp/${Remark}"></span>`);
+            }
+        }
 
+
+        layui.use('upload', function() {
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#uploadImg' //绑定元素
+                    ,
+                url: './static/attack_insp/' //上传接口
+                    ,
+                done: function(res) {
+                    //上传完毕回调
+                    alert("ok");
+                },
+                error: function() {
+                    //请求异常回调
+                    alert("上传失败");
+                }
+            });
+
+            //执行实例
+            var uploadInst1 = upload.render({
+                elem: '#uploadVideo' //绑定元素
+                    ,
+                url: './static/attack_insp/' //上传接口
+                    ,
+                done: function(res) {
+                    //上传完毕回调
+                    alert("ok");
+                },
+                error: function() {
+                    //请求异常回调
+                    alert("上传失败");
+                }
+            });
+        });
     });
 </script>
 
