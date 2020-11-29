@@ -7,7 +7,7 @@
     <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
     <link rel="stylesheet" href="static/LayUI/css/layui.css" media="all">
     <script src="static/LayUI/layui.js"></script>
-    <title>障碍检测</title>
+    <title>入侵检测</title>
     <style type="text/css">
         body {
             background-color: #E5EBF6;
@@ -32,6 +32,8 @@
                     <div class="layui-card-body">
                         <p id="x"></p>
                         <p id="y"></p>
+                        <p id="position"></p>
+                        <p id="AType"></p>
                         <p id="longitude"> </p>
                         <p id="latitude"></p>
                         <p id="date"></p>
@@ -83,6 +85,8 @@
         var date = getURLParameter('date');
         var x = getURLParameter('x');
         var y = getURLParameter('y');
+        var position = getURLParameter('position');
+        var AType = getURLParameter('AType');
         var longitude = getURLParameter('longitude');
         var latitude = getURLParameter('latitude');
         var reason = getURLParameter('reason');
@@ -96,6 +100,8 @@
         // console.log(latitude);
         $("#x").html('<b>入侵坐标x：</b>' + x);
         $("#y").html('<b>入侵坐标y：</b>' + y);
+        $("#position").html('<b>入侵位置：</b>' + position);
+        $("#AType").html('<b>入侵类型：</b>' + AType);
         $("#longitude").html('<b>入侵经度：</b>' + longitude);
         $("#latitude").html('<b>入侵纬度：</b>' + latitude);
         $("#date").html('<b>入侵时间：</b>' + date);
