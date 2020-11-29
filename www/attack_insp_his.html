@@ -1,10 +1,11 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" ;/>
 
     <script type="text/javascript" src="static/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="static/js/DBase.js"></script>
     <link rel="stylesheet" href="static/LayUI/css/layui.css" media="all">
     <script src="static/LayUI/layui.js"></script>
     <title>入侵检测</title>
@@ -17,10 +18,145 @@
 </head>
 
 <body>
+    <form class="layui-form layui-form-pane" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">起始时间</label>
+            <div class="layui-input-block">
+                <input placeholder="yyyy-MM-dd HH:mm:ss" type="text" name="startDate" id="startDate" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-block">
+                <input placeholder="yyyy-MM-dd HH:mm:ss" type="text" name="endDate" id="endDate" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">位置</label>
+            <div class="layui-input-block">
+                <input type="text" name="position" id="position" placeholder="请输入位置" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">入侵类型</label>
+            <div class="layui-input-block">
+                <input type="text" name="AType" id="AType" placeholder="请输入位置" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">搜索</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
 
+    <table id="demo" lay-filter="test"></table>
 </body>
 <script>
     $(document).ready(function() {
+        layui.use('laydate', function() {
+            var laydate = layui.laydate;
+
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#startDate', //指定元素
+                type: 'datetime',
+                theme: 'grid'
+            });
+
+            laydate.render({
+                elem: '#endDate', //指定元素
+                type: 'datetime',
+                theme: 'grid'
+            });
+        });
+
+        layui.use('table', function() {
+            var table = layui.table;
+            let TableCols = ["DT", "position", "AType", "Remark"];
+            let URL = "/ZcmDB|alarm|select * from Intrusion;|";
+            let attack_data = window.selectDB(URL, TableCols);
+            for (let i in attack_data) {
+                let button = $('<button class="layui-btn layui-btn-sm layui-btn-warm">+</button>');
+                attack_data[i].more = button.prop("outerHTML");
+            }
+
+            table.render({
+                elem: '#demo',
+                height: 500,
+                data: attack_data,
+                page: true, //开启分页
+                cols: [
+                    [ //表头
+                        {
+                            field: 'DT',
+                            title: '日期',
+                            width: "30%",
+                            sort: true,
+                        }, {
+                            field: 'position',
+                            title: '位置',
+                            width: "30%",
+                            sort: true
+                        }, {
+                            field: 'AType',
+                            title: '入侵类型',
+                            width: "30%",
+                            sort: true
+                        }, {
+                            field: 'more',
+                            title: '查看详情',
+                            width: "10%",
+                        },
+                    ]
+                ],
+                toolbar: true,
+                done: function(res, curr, count) {
+                    //如果是异步请求数据方式，res即为你接口返回的信息。
+                    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                    console.log(res);
+
+                    //得到当前页码
+                    console.log(curr);
+
+                    //得到数据总量
+                    console.log(count);
+                }
+            });
+
+            // let jn = {
+            //     "id": "attack_insp",
+            //     "title": "入侵检测详情",
+            //     "date": attack_data[i].DT,
+            //     "positioin": attack_data[i].positioin,
+            //     "AType": attack_data[i].AType,
+            //     "webSrc": null,
+            // }
+            // jn.webSrc = `./attack_insp.html?id=${jn.id}&title=${jn.title}&date=${jn.date}&position=${jn.positioin}&AType=${jn.AType}`;
+
+
+        });
+
+        layui.use('form', function() {
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(formDemo)', function(data) {
+                //获取到表单所有字段的数据，数据类型为JSON
+                let field = data.field;
+                //layer.msg(JSON.stringify(data.field));
+                let TableCols = ["DT", "position", "AType", "Remark"];
+                let URL = "/ZcmDB|alarm|select * from Intrusion;|";
+                let attack_data = window.selectDB(URL, TableCols);
+                //console.log(attack_data);
+
+
+                return false;
+            });
+        });
+
+
 
     });
 </script>

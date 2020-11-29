@@ -30,15 +30,15 @@
                 <div class="layui-card">
                     <div class="layui-card-header">报警详细信息</div>
                     <div class="layui-card-body">
-                        <p id="x"></p>
+                        <!-- <p id="x"></p>
                         <p id="y"></p>
-                        <p id="position"></p>
-                        <p id="AType"></p>
                         <p id="longitude"> </p>
                         <p id="latitude"></p>
-                        <p id="date"></p>
                         <p id="reason"></p>
-                        <p id="elze"></p>
+                        <p id="elze"></p> -->
+                        <p id="date"></p>
+                        <p id="position"></p>
+                        <p id="AType"></p>
                     </div>
                 </div>
             </div>
@@ -80,17 +80,18 @@
             return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
         }
 
-        var id = getURLParameter('id');
-        var title = getURLParameter('title');
+        // var id = getURLParameter('id');
+        // var title = getURLParameter('title');
+        // var x = getURLParameter('x');
+        // var y = getURLParameter('y');
+        // var longitude = getURLParameter('longitude');
+        // var latitude = getURLParameter('latitude');
+        // var reason = getURLParameter('reason');
+        // var elze = getURLParameter('elze');
         var date = getURLParameter('date');
-        var x = getURLParameter('x');
-        var y = getURLParameter('y');
         var position = getURLParameter('position');
         var AType = getURLParameter('AType');
-        var longitude = getURLParameter('longitude');
-        var latitude = getURLParameter('latitude');
-        var reason = getURLParameter('reason');
-        var elze = getURLParameter('elze');
+
         // console.log(id);
         // console.log(title);
         // console.log(date);
@@ -98,15 +99,16 @@
         // console.log(y);
         // console.log(longitude);
         // console.log(latitude);
-        $("#x").html('<b>入侵坐标x：</b>' + x);
-        $("#y").html('<b>入侵坐标y：</b>' + y);
+        // $("#x").html('<b>入侵坐标x：</b>' + x);
+        // $("#y").html('<b>入侵坐标y：</b>' + y);
+        // $("#longitude").html('<b>入侵经度：</b>' + longitude);
+        // $("#latitude").html('<b>入侵纬度：</b>' + latitude);
+        // $("#reason").html('<b>原因：</b>' + reason);
+        // $("#elze").html('<b>其他：</b>' + elze);
+        $("#date").html('<b>入侵时间：</b>' + date);
         $("#position").html('<b>入侵位置：</b>' + position);
         $("#AType").html('<b>入侵类型：</b>' + AType);
-        $("#longitude").html('<b>入侵经度：</b>' + longitude);
-        $("#latitude").html('<b>入侵纬度：</b>' + latitude);
-        $("#date").html('<b>入侵时间：</b>' + date);
-        $("#reason").html('<b>原因：</b>' + reason);
-        $("#elze").html('<b>其他：</b>' + elze);
+
     });
 </script>
 
