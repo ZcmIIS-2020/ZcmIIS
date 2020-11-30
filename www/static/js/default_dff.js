@@ -1,6 +1,5 @@
 $(document).ready(function() {
     webSocketConfig();
-    moveTrain();
     //用来存储websocket发来的各个通道下D1到D16实时数据
     var socketData = [];
     var lockReconnect = false; //避免websocket重复连接
@@ -572,72 +571,5 @@ $(document).ready(function() {
             }())
         }]
     });
-
-    //让图像伴随火车动画播放
-    function moveTrain() {
-        let index = 0;
-        let step = 1;
-        let interval = 4;
-        let lcontent1 = $("#lcontent1");
-        let lcontent2 = $("#lcontent2");
-        let lcontent3 = $("#lcontent3");
-        setInterval(function() {
-            switch (index) {
-                case 0:
-                    {
-                        let video = $('<video class="box_content"  autoplay muted="muted" ></video>');
-                        lcontent1.empty();
-
-                        if (step == 1) {
-                            video.attr("src", "./static/video/湖工大下.mp4");
-                        } else if (step == -1) {
-                            video.attr("src", "./static/video/湖工大上.mp4");
-                        }
-
-                        lcontent1.append(video);
-                        break;
-                    }
-
-                case (0 + interval):
-                    {
-                        let video = $('<video class="box_content"  autoplay muted="muted" ></video>');
-                        lcontent2.empty();
-
-                        if (step == 1) {
-                            video.attr("src", "./static/video/板桥下.mp4");
-                        } else if (step == -1) {
-                            video.attr("src", "./static/video/板桥上.mp4");
-                        }
-
-                        lcontent2.append(video);
-                        break;
-                    }
-
-                case (0 + interval * 2):
-                    {
-                        let video = $('<video class="box_content"  autoplay muted="muted" ></video>');
-                        lcontent3.empty();
-
-                        if (step == 1) {
-                            video.attr("src", "static/video/野芷湖下.mp4");
-                        } else if (step == -1) {
-                            video.attr("src", "static/video/野芷湖上.mp4");
-                        }
-
-                        lcontent3.append(video);
-                        break;
-                    }
-            }
-            if (index == -1)
-                step = 1;
-            else if (index == (0 + interval * 2 + 1))
-                step = -1;
-            index = index + step;
-        }, 1000);
-    }
-
-
-
-
 
 });
