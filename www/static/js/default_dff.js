@@ -441,7 +441,7 @@ $(document).ready(function() {
             enabled: false
         },
         series: [{
-            name: '随机数据',
+            name: '',
             data: (function() {
                 // 生成随机值
                 var data = [],
@@ -498,7 +498,7 @@ $(document).ready(function() {
             enabled: false
         },
         series: [{
-            name: '随机数据',
+            name: '',
             data: (function() {
                 // 生成随机值
                 var data = [],
@@ -555,7 +555,7 @@ $(document).ready(function() {
             enabled: false
         },
         series: [{
-            name: '随机数据',
+            name: '',
             data: (function() {
                 // 生成随机值
                 var data = [],
